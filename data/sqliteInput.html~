@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+   <head>
+      <title>Room Rental Application Has Been Saved</title>
+   </head>
+   
+   <script type="text/javascript">
+      function setSqliteInput() {
+         document.getElementById('sqlinsert').value = window.localStorage.getItem("sqlinsert");
+      }
+   </script>
+
+   <body>
+   <form>
+      <textarea name="sqlinsert" id="sqlinsert" cols="24" rows="6"></textarea>
+      <script type="text/javascript">
+         document.getElementById('sqlinsert').value = window.localStorage.getItem("sqlinsert");
+      </script>
+      <a href="javascript:setSqliteInput();">Set SQL Input</a>
+      <a href="rentap.html">Back</a>
+   </form>
+   </body>
+<html>

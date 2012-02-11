@@ -1,0 +1,16 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+   <head>
+      <title>Find Room Rental Application</title>
+   </head>   
+   <link rel="stylesheet" media="screen" href="rentap-screen.css">
+   <body>
+   <form/>
+      <a href="rentap.html">Click if not automatically redirected</a>
+   </form>
+      <script type="text/javascript">
+         document.getElementById('findname').value = window.localStorage.getItem("findname");
+      </script>
+   </body>
+</html>

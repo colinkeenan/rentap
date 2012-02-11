@@ -1,0 +1,9 @@
+{
+    "name": "rentap", 
+    "license": "GPL 3.0", 
+    "version": "0.82", 
+    "Colin Keenan": "colinnkeenan@gmail.com", 
+    "fullName": "Rental Application", 
+    "id": "jid1-E1afJi6vbTfsRg", 
+    "description": "Create/save/edit/print Rental Applications using simple-storage offline on your own computer. To run, create a blank file named rentapstart.html (doesn't matter where you put it) and double-click: Firefox will open the Rental Application instead."
+}
