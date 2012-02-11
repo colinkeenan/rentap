@@ -1,8 +1,0 @@
-self.postMessage("Open rentap.html"); 
-self.on("message", function(rheader) {
-   window.alert(rheader[0] + ", " + rheader[1] + ", " + rheader[2]);
-   window.sessionStorage.setItem("rentaladdress",rheader[0]); 
-   window.sessionStorage.setItem("rentalcitystzip",rheader[1]); 
-   window.sessionStorage.setItem("rtitle",rheader[2]);
-   self.postMessage("Display rentap header");
-});
