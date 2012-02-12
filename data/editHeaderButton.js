@@ -1,9 +1,9 @@
-var butt = document.createElement("button");    //define button element
-var btext = document.createTextNode(">");  //define the text
-butt.appendChild(btext);                        //attach text to the button
+var butt = document.createElement("button");             //define button element
+var btext = document.createTextNode("~");        //define the text
+butt.appendChild(btext);                                 //attach text to the button
 
-butt.addEventListener("click",                  //handle onclick event
-   function(){
+butt.addEventListener("click", 
+   function() {                                          //handle onclick event
       var fullname = "\"" + document.getElementById('fullname').value + "\""
       var ssnumber = "\"" + document.getElementById('ssnumber').value + "\""
       var birthdate = "\"" + document.getElementById('birthdate').value + "\""
@@ -30,20 +30,21 @@ butt.addEventListener("click",                  //handle onclick event
       var csvtosave =  
       fullname + "," + ssnumber + "," + birthdate + "," + maritalstatus + "," + email + "," + stateid + "," +  phone1 + "," + phone2 + "," + currentaddress + "," + previousaddresses + "," + occupants + "," + pets + "," + income + "," + employment + "," + evictions + "," + felonies + "," + authdate + "," + guestdate + "," + rentdate + "," + rentaladdress + "," + rentalcitystzip + "," + rtitle;
 
-      window.sessionStorage.setItem("csv", csvtosave);  //store the csv data in sessionStorage to be displayed on the form when refreshed to the rentaphdr.html
+      window.sessionStorage.setItem("csv", csvtosave);  //store the csv data in sessionStorage to be displayed on the form when refreshed
+
+      var i = window.sessionStorage.getItem("RHEADERi")
+      var address = document.getElementById('rentaladdress').value
+      var citystatezip = document.getElementById('rentalcitystzip').value
+      var title = document.getElementById('rtitle').value
+      var headername = document.getElementById('headername').value
+      window.sessionStorage.setItem("rentaladdress",address);
+      window.sessionStorage.setItem("rentalcitystzip",citystatezip);
+      window.sessionStorage.setItem("rtitle",title);
+      window.sessionStorage.setItem("headername",headername);
       
-      var listheadermenu = document.getElementById('listheadermenu');
-      var sel = listheadermenu.firstChild;
-      var i = sel.selectedIndex;
-      self.postMessage(i); 
-      self.on("message", function(rheader) {
-         window.sessionStorage.setItem("rentaladdress",rheader[0]); 
-         window.sessionStorage.setItem("rentalcitystzip",rheader[1]); 
-         window.sessionStorage.setItem("rtitle",rheader[2]);
-         window.sessionStorage.setItem("RHEADERi",i);
-         window.sessionStorage.setItem("headername",rheader[3]);
-      });
+      var iR = [i,address,citystatezip,title,headername];
+      self.postMessage(iR); //send header to worker to be saved in simple-storage
    },
 false);
+document.getElementById("editheaderbutton").appendChild(butt); //put the button on the page
 
-document.getElementById("nextrheaderbutton").appendChild(butt); //put the button on the page

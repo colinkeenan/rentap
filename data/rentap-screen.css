@@ -1,5 +1,5 @@
 #rentapheader {min-width: 1346px; margin:0px}
-#tdrtitle,#rtitle {font:26px/32px san-serif; font-weight: bold; text-align:center; border-width:0px; vertical-align:top; max-width:400px; width:400px; margin:0px; padding:0px;display: inline-block}
+#tdrtitle,#rtitle {font:26px/32px sans-serif; font-weight: bold; text-align:center; border-width:0px; vertical-align:top; max-width:400px; width:400px; margin:0px; padding:0px;display: inline-block}
 #rentaladdress, #rentalcitystzip {font:12px/16px serif; font-weight: bold; border-width:0px; vertical-align:top; max-width: 180px; width: 180px; max-height: 18px; margin:0px; padding:0px; display: block}
 #authdate {width:6em}
 #rowprint {width:3em; border-width:0px;}
@@ -15,5 +15,5 @@ input {font:14px/16px serif; width:16em}
 td {vertical-align:top; max-width:330px}
 label {font: 14px/16px sans-serif; display: inline-block; min-width: 78px}
 .button {max-width: 9em}
-.inline-noprint, .inline {display: inline-block;}
+.inline {display: inline-block;}
 #findname {width: 250px}

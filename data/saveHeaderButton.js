@@ -1,5 +1,5 @@
 var butt = document.createElement("button");             //define button element
-var btext = document.createTextNode("Save Header");        //define the text
+var btext = document.createTextNode("+");        //define the text
 butt.appendChild(btext);                                 //attach text to the button
 
 butt.addEventListener("click", 
@@ -35,14 +35,16 @@ butt.addEventListener("click",
       var address = document.getElementById('rentaladdress').value
       var citystatezip = document.getElementById('rentalcitystzip').value
       var title = document.getElementById('rtitle').value
+      var headername = document.getElementById('headername').value
       window.sessionStorage.setItem("rentaladdress",address);
       window.sessionStorage.setItem("rentalcitystzip",citystatezip);
       window.sessionStorage.setItem("rtitle",title);
+      window.sessionStorage.setItem("headername",headername);
       
-      var headerinfo = [address,citystatezip,title];
-      self.postMessage(headerinfo); //send header to worker to be saved in simple-storage
-      self.on("message", function(HEADERi) {
-         window.sessionStorage.setItem("HEADERi",HEADERi); //worker returns index of saved header, saved here to keep track of it
+      var rheader = [address,citystatezip,title,headername];
+      self.postMessage(rheader); //send header to worker to be saved in simple-storage
+      self.on("message", function(RHEADERi) {
+         window.sessionStorage.setItem("RHEADERi",RHEADERi); //worker returns index of saved header, saved here to keep track of it
       });
    },
 false);

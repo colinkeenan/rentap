@@ -60,15 +60,18 @@ function setRheader() {
    var rentaladdress = window.sessionStorage.getItem("rentaladdress")
    var rentalcitystzip = window.sessionStorage.getItem("rentalcitystzip")
    var rtitle = window.sessionStorage.getItem("rtitle")
+   var headername = window.sessionStorage.getItem("headername")
    if (rentaladdress) document.getElementById('rentaladdress').value = rentaladdress;
    if (rentalcitystzip) document.getElementById('rentalcitystzip').value = rentalcitystzip;
    if (rtitle) document.getElementById('rtitle').value = rtitle;
+   if (headername) document.getElementById('headername').value = headername;
 }
 
 function importCSV() {
    var csv = document.getElementById('csv').value
    if (csv === "") csv = window.sessionStorage.getItem("csv");
    var row = window.sessionStorage.getItem("CSVi");
+   var headername = window.sessionStorage.getItem('headername');
    var csvfield = csv.split("\"\,\"")
    var fullname = csvfield[0].slice(1)
    var ssnumber = csvfield[1]
@@ -124,6 +127,7 @@ function importCSV() {
    document.getElementById('rtitle').value = rtitle;
    document.getElementById('csv').value="";
    document.getElementById('rowprint').value=row;
+   document.getElementById('headername').value=headername;
 }
 
 
