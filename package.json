@@ -1,9 +1,10 @@
 {
     "name": "rentap", 
     "license": "GPL 3.0", 
-    "version": "0.83", 
-    "Colin Keenan": "colinnkeenan@gmail.com", 
+    "version": "0.84", 
+    "author": "Colin Keenan <colinnkeenan@gmail.com>", 
     "fullName": "Rental Application", 
     "id": "jid1-E1afJi6vbTfsRg", 
-    "description": "Create/save/edit/print Rental Applications using simple-storage offline on your own computer. Instructions: http://code.google.com/p/rentap/wiki/Instructions. Report Comments/Issues: http://code.google.com/p/rentap/wiki/UserComments"
+    "description": "Create/save/edit/print Rental Applications using simple-storage offline on your own computer. Instructions: http://code.google.com/p/rentap/wiki/Instructions. Report Comments/Issues: http://code.google.com/p/rentap/wiki/UserComments",
+    "homepage": "http://code.google.com/p/rentap/"
 }
