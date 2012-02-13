@@ -1,11 +1,12 @@
-#rentapheader {min-width: 1346px; margin:0px}
+#rentapheader {min-width: 1256px; margin:0px}
+#headercontrols {max-width: 225px}
+#controls, #headercontrols {margin-left:20px; padding-left:20px;}
 #tdrtitle,#rtitle {font:26px/32px sans-serif; font-weight: bold; text-align:center; border-width:0px; vertical-align:top; max-width:400px; width:400px; margin:0px; padding:0px;display: inline-block}
 #rentaladdress, #rentalcitystzip {font:12px/16px serif; font-weight: bold; border-width:0px; vertical-align:top; max-width: 180px; width: 180px; max-height: 18px; margin:0px; padding:0px; display: block}
 #authdate {width:6em}
 #rowprint {width:3em; border-width:0px;}
 #rentapbody {min-width: 1330px; margin:0px}
 ul {margin-left:0px; padding-left:0px;}
-#controls {margin-left:20px; padding-left:20px;}
 li {list-style: none;}
 textarea {font:14px/16px serif;}
 .personalinfo {margin-left: 5px}

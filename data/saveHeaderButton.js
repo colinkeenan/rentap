@@ -1,6 +1,6 @@
-var butt = document.createElement("button");             //define button element
+var butt = document.createElement("button");     //define button element
 var btext = document.createTextNode("+");        //define the text
-butt.appendChild(btext);                                 //attach text to the button
+butt.appendChild(btext);                         //attach text to the button
 
 butt.addEventListener("click", 
    function() {                                          //handle onclick event

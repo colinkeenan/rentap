@@ -127,7 +127,7 @@ function importCSV() {
    document.getElementById('rtitle').value = rtitle;
    document.getElementById('csv').value="";
    document.getElementById('rowprint').value=row;
-   document.getElementById('headername').value=headername;
+   document.getElementById('headername').value="";
 }
 
 
