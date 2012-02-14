@@ -15,7 +15,7 @@ self.on("message", function(RHEADER) {
    };
 });
 
-sel.addEventListener("click", //can't get any kind of onchange to work so user has to hold down click until selection made
+sel.onchange = 
    function(){
       self.postMessage('click'); //tell worker about click so worker can give back RHEADER
       self.on("message", function(RHEADER) {
@@ -57,9 +57,7 @@ sel.addEventListener("click", //can't get any kind of onchange to work so user h
          
          self.postMessage(''); //tell worker to refresh the page, displaying the newly selected header
       });
-   },
-false);
-
+   }
 
 
 
