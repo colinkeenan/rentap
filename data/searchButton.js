@@ -10,7 +10,7 @@ butt.addEventListener("click",                  //handle onclick event
       } else {
          self.postMessage(document.getElementById('findname').value);     // sends search-box text to saveButton.PageMod worker
          self.on("message", function(foundnames) {
-            var CSV = foundnames[1]
+            var CSV = foundnames[1];
             window.sessionStorage.setItem('csv', CSV[1]);
             window.sessionStorage.setItem('CSVi',CSV[0]);
             window.sessionStorage.setItem('mode','edit');
@@ -22,8 +22,8 @@ butt.addEventListener("click",                  //handle onclick event
                
                rows = rows + CSV[0] + ",";
                
-               var csvfield = CSV[1].split("\"\,\"")
-               var fullname = csvfield[0].slice(1)
+               var csvfield = CSV[1].split("\"\,\"");
+               var fullname = csvfield[0].slice(1);
                names = names + fullname + ",";
                
                i++;
