@@ -4,44 +4,47 @@ butt.appendChild(btext);                                 //attach text to the bu
 
 butt.addEventListener("click", 
    function() {                                          //handle onclick event
-      var fullname = "\"" + document.getElementById('fullname').value + "\""
-      var ssnumber = "\"" + document.getElementById('ssnumber').value + "\""
-      var birthdate = "\"" + document.getElementById('birthdate').value + "\""
-      var maritalstatus = "\"" + document.getElementById('maritalstatus').value + "\""
-      var email = "\"" + document.getElementById('email').value + "\""
-      var stateid = "\"" + document.getElementById('stateid').value + "\""
-      var phone1 = "\"" + document.getElementById('phone1').value + "\""
-      var phone2 = "\"" + document.getElementById('phone2').value + "\""
-      var currentaddress = "\"" + document.getElementById('currentaddress').value + "\""
-      var previousaddresses = "\"" + document.getElementById('previousaddresses').value + "\""
-      var occupants = "\"" + document.getElementById('occupants').value + "\""
-      var pets = "\"" + document.getElementById('pets').value + "\""
-      var income = "\"" + document.getElementById('income').value + "\""
-      var employment = "\"" + document.getElementById('employment').value + "\""
-      var evictions = "\"" + document.getElementById('evictions').value + "\""
-      var felonies = "\"" + document.getElementById('felonies').value + "\""
-      var authdate = "\"" + document.getElementById('authdate').value + "\""
-      var guestdate = "\"" + document.getElementById('guestdate').value + "\""
-      var rentdate = "\"" + document.getElementById('rentdate').value + "\""
-      var rentaladdress = "\"" + document.getElementById('rentaladdress').value + "\""
-      var rentalcitystzip = "\"" + document.getElementById('rentalcitystzip').value + "\""
-      var rtitle = "\"" + document.getElementById('rtitle').value + "\""
-      
-      var csvtosave =  
-      fullname + "," + ssnumber + "," + birthdate + "," + maritalstatus + "," + email + "," + stateid + "," +  phone1 + "," + phone2 + "," + currentaddress + "," + previousaddresses + "," + occupants + "," + pets + "," + income + "," + employment + "," + evictions + "," + felonies + "," + authdate + "," + guestdate + "," + rentdate + "," + rentaladdress + "," + rentalcitystzip + "," + rtitle;
-
-      window.sessionStorage.setItem("csv", csvtosave);  //store the csv data in sessionStorage to be displayed on the form when refreshed
-      
-      var mode = window.sessionStorage.getItem('mode');
+         
+      var rentap = [
+         [document.getElementById('fullname').value,
+         document.getElementById('ssnumber').value,
+         document.getElementById('birthdate').value,
+         document.getElementById('maritalstatus').value,
+         document.getElementById('email').value,
+         document.getElementById('stateid').value,
+         document.getElementById('phone1').value,
+         document.getElementById('phone2').value,
+         document.getElementById('currentaddress').value,
+         document.getElementById('previousaddresses').value,
+         document.getElementById('occupants').value,
+         document.getElementById('pets').value,
+         document.getElementById('income').value,
+         document.getElementById('employment').value,
+         document.getElementById('evictions').value,
+         document.getElementById('felonies').value,
+         document.getElementById('authdate').value,
+         document.getElementById('guestdate').value.replace(/\n/g," "), //newlines in the date boxes aren't handled correctly by UCSV v1.0.2
+         document.getElementById('rentdate').value.replace(/\n/g," "),
+         document.getElementById('rentaladdress').value,
+         document.getElementById('rentalcitystzip').value,
+         document.getElementById('rtitle').value]
+      ]
+   
+      window.sessionStorage.setItem("rentapJSON", JSON.stringify(rentap));  //store the data in sessionStorage to be displayed on the form when refreshed
+     
+      var mode = window.sessionStorage.getItem('rentapmode');
       if (mode==="edit") {
          window.alert("Warning: this application has already been saved in the past. Clicking 'Save New' again will save another copy leaving the original untouched. If that's not what you want to do, click 'Save Edit' instead.");
-         window.sessionStorage.setItem('mode','new'); //although session storage mode has been changed to 'new', mode is still 'edit'
+         window.sessionStorage.setItem('rentapmode','newedit'); //although session storage mode has been changed to 'newedit', mode is still 'edit' until the next time this function is called
       }
-      self.postMessage([csvtosave,mode]);                //send csv data to saveButton.PageMod worker to save it in a simple-storage csv array
-      self.on("message", function(row) {          // gets "row" back from saveButton.PageMod worker
-         window.sessionStorage.setItem('CSVi',row);
-         if (mode==='new') window.sessionStorage.setItem('mode','edit'); //having saved the application, further changes would be an edit
-                                                                         //if mode is 'edit' then session storage mode was changed to 'new'
+      
+      self.postMessage([rentap,mode]);  //send data to saveButton.PageMod worker to save it in a simple-storage csv array if mode is 'new' or 'newedit'
+
+      self.on("message", function(row) {   // gets "row" back from saveButton.PageMod worker
+         if (mode==='new' || mode==='newedit') {  //if mode is edit, nothing was saved, and nothing to do here
+            window.sessionStorage.setItem('rentapCSVi',row);
+            window.sessionStorage.setItem('rentapmode','edit'); //having saved the application, further changes would be an edit
+         }
       });
    },
 false);

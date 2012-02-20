@@ -1,3 +1,235 @@
+/*!
+ * UCSV v1.0.2
+ * Provided under MIT License.
+ *
+ * Copyright 2010, Peter Johnson
+ * http://www.uselesscode.org/javascript/csv/
+ */
+
+/* jsLint stuff */
+/*global */
+/*members apply, arrayToCsv, charAt, csvToArray, length, prototype, push, 
+    replace, substring, test, toString, trim
+*/
+
+"use strict";
+/**
+ * Namespace for CSV functions
+ * @namespace
+ */
+var CSV = (function () {
+
+	var rxIsInt = /^\d+$/,
+	rxIsFloat = /^\d*\.\d+$|^\d+\.\d*$/,
+	rxNeedsQuoting = /^\s|\s$|,|"/,
+	trim = (function () {
+		// Fx 3.1 has a native trim function, it's about 10x faster, use it if it exists
+		if (String.prototype.trim) {
+			return function (s) {
+				return s.trim();
+			};
+		} else {
+			return function (s) {
+				return s.replace(/^\s*/, '').replace(/\s*$/, '');
+			};
+		}
+	}());
+ 
+	function isNumber(o) {
+		return Object.prototype.toString.apply(o) === '[object Number]';
+	}
+
+	function isString(o) {
+		return Object.prototype.toString.apply(o) === '[object String]';
+	}
+
+	function chomp(s) {
+		if (s.charAt(s.length - 1) !== "\n") {
+			// Does not end with \n, just return string
+			return s;
+		} else {
+			// Remove the \n
+			return s.substring(0, s.length - 1);
+		}
+	}
+
+ /**
+	* Converts an array into a Comma Separated Values list.
+	* Each item in the array should be an array that represents one line in the CSV.
+	* Nulls are interpreted as empty fields.
+	*
+	* @param {String} a The array to convert
+	*
+	* @returns A CSV representation of the provided array.
+	* @type string
+	* @public
+	* @static
+	* @example
+	* var csvArray = [
+	* ['Leno, Jay', 10],
+	* ['Conan "Conando" O\'Brien', '11:35' ],
+	* ['Fallon, Jimmy', '12:35' ]
+	* ];
+	* CSV.arrayToCsv(csvArray);
+	* // Outputs a string containing:
+	* // "Leno, Jay",10
+	* // "Conan ""Conando"" O'Brien",11:35
+	* // "Fallon, Jimmy",12:35
+	*/
+	function arrayToCsv(a) {
+		var cur,
+		out = '',
+		row,
+		i,
+		j;
+
+		for (i = 0; i < a.length; i += 1) {
+			row = a[i];
+			for (j = 0; j < row.length; j += 1) {
+				cur = row[j];
+
+				if (isString(cur)) {
+					// Escape any " with double " ("")
+					cur = cur.replace(/"/g, '""');
+
+					// If the field starts or ends with whitespace, contains " or , or is a string representing a number
+					if (rxNeedsQuoting.test(cur) || rxIsInt.test(cur) || rxIsFloat.test(cur)) {
+						cur = '"' + cur + '"';
+					// quote empty strings
+					} else if (cur === "") {
+						cur = '""';
+					}
+				} else if (isNumber(cur)) {
+					cur = cur.toString(10);
+				} else if (cur === null) {
+					cur = '';
+				} else {
+					cur = cur.toString();
+				}
+
+				out += j < row.length - 1 ? cur + ',' : cur;
+			}
+			// End record
+			out += "\n";
+		}
+
+		return out;
+	}
+
+	/**
+	 * Converts a Comma Separated Values string into an array of arrays.
+	 * Each line in the CSV becomes an array.
+	 * Empty fields are converted to nulls and non-quoted numbers are converted to integers or floats.
+	 *
+	 * @return The CSV parsed as an array
+	 * @type Array
+	 * 
+	 * @param {String} s The string to convert
+	 * @param {Boolean} [trm=false] If set to True leading and trailing whitespace is stripped off of each non-quoted field as it is imported
+	 * @public
+	 * @static
+	 * @example
+	 * var csv = '"Leno, Jay",10' + "\n" +
+	 * '"Conan ""Conando"" O\'Brien",11:35' + "\n" +
+	 * '"Fallon, Jimmy",12:35' + "\n";
+	 *
+	 * var array = CSV.csvToArray(csv);
+	 * 
+	 * // array is now
+	 * // [
+	 * // ['Leno, Jay', 10],
+	 * // ['Conan "Conando" O\'Brien', '11:35' ],
+	 * // ['Fallon, Jimmy', '12:35' ]
+	 * // ];
+	 */
+	function csvToArray(s, trm) {
+		// Get rid of any trailing \n
+		s = chomp(s);
+
+		var cur = '', // The character we are currently processing.
+		inQuote = false,
+		fieldQuoted = false,
+		field = '', // Buffer for building up the current field
+		row = [],
+		out = [],
+		i,
+		processField;
+
+		processField = function (field) {
+			if (fieldQuoted !== true) {
+				// If field is empty set to null
+				if (field === '') {
+					field = null;
+				// If the field was not quoted and we are trimming fields, trim it
+				} else if (trm === true) {
+					field = trim(field);
+				}
+
+				// Convert unquoted numbers to their appropriate types
+				if (rxIsInt.test(field)) {
+					field = parseInt(field, 10);
+				} else if (rxIsFloat.test(field)) {
+					field = parseFloat(field, 10);
+				}
+			}
+			return field;
+		};
+
+		for (i = 0; i < s.length; i += 1) {
+			cur = s.charAt(i);
+
+			// If we are at a EOF or EOR
+			if (inQuote === false && (cur === ',' || cur === "\n")) {
+				field = processField(field);
+				// Add the current field to the current row
+				row.push(field);
+				// If this is EOR append row to output and flush row
+				if (cur === "\n") {
+					out.push(row);
+					row = [];
+				}
+				// Flush the field buffer
+				field = '';
+				fieldQuoted = false;
+			} else {
+				// If it's not a ", add it to the field buffer
+				if (cur !== '"') {
+					field += cur;
+				} else {
+					if (!inQuote) {
+						// We are not in a quote, start a quote
+						inQuote = true;
+						fieldQuoted = true;
+					} else {
+						// Next char is ", this is an escaped "
+						if (s.charAt(i + 1) === '"') {
+							field += '"';
+							// Skip the next char
+							i += 1;
+						} else {
+							// It's not escaping, so end quote
+							inQuote = false;
+						}
+					}
+				}
+			}
+		}
+
+		// Add the last field
+		field = processField(field);
+		row.push(field);
+		out.push(row);
+
+		return out;
+	}
+
+	return {
+		arrayToCsv: arrayToCsv,
+		csvToArray: csvToArray
+	};
+}());
+
+
 function setSqlInsertText() {
    var fullname = "\'" + document.getElementById('fullname').value.replace(/\'/g,"\'\'") + "\'"
    var ssnumber = "\'" + document.getElementById('ssnumber').value.replace(/\'/g,"\'\'") + "\'"
@@ -28,81 +260,100 @@ function setSqlInsertText() {
    fullname + ", " + ssnumber + ", " + birthdate + ", " + maritalstatus + ", " + email + ", " + stateid + ", " +  phone1 + ", " + phone2 + ", " + currentaddress + ", " + previousaddresses + ", " + occupants + ", " + pets + ", " + income + ", " + employment + ", " + evictions + ", " + felonies + ", " + authdate + ", " + guestdate + ", " + rentdate + ", " + rentaladdress + "," + rentalcitystzip + "," + rtitle + ")";
 }
 
-function setCSVdata() {
-   var fullname = "\"" + document.getElementById('fullname').value + "\""
-   var ssnumber = "\"" + document.getElementById('ssnumber').value + "\""
-   var birthdate = "\"" + document.getElementById('birthdate').value + "\""
-   var maritalstatus = "\"" + document.getElementById('maritalstatus').value + "\""
-   var email = "\"" + document.getElementById('email').value + "\""
-   var stateid = "\"" + document.getElementById('stateid').value + "\""
-   var phone1 = "\"" + document.getElementById('phone1').value + "\""
-   var phone2 = "\"" + document.getElementById('phone2').value + "\""
-   var currentaddress = "\"" + document.getElementById('currentaddress').value + "\""
-   var previousaddresses = "\"" + document.getElementById('previousaddresses').value + "\""
-   var occupants = "\"" + document.getElementById('occupants').value + "\""
-   var pets = "\"" + document.getElementById('pets').value + "\""
-   var income = "\"" + document.getElementById('income').value + "\""
-   var employment = "\"" + document.getElementById('employment').value + "\""
-   var evictions = "\"" + document.getElementById('evictions').value + "\""
-   var felonies = "\"" + document.getElementById('felonies').value + "\""
-   var authdate = "\"" + document.getElementById('authdate').value + "\""
-   var guestdate = "\"" + document.getElementById('guestdate').value + "\""
-   var rentdate = "\"" + document.getElementById('rentdate').value + "\""
-   var rentaladdress = "\"" + document.getElementById('rentaladdress').value + "\""
-   var rentalcitystzip = "\"" + document.getElementById('rentalcitystzip').value + "\""
-   var rtitle = "\"" + document.getElementById('rtitle').value + "\""
-
-   document.getElementById('csv').value =   
-   fullname + "," + ssnumber + "," + birthdate + "," + maritalstatus + "," + email + "," + stateid + "," +  phone1 + "," + phone2 + "," + currentaddress + "," + previousaddresses + "," + occupants + "," + pets + "," + income + "," + employment + "," + evictions + "," + felonies + "," + authdate + "," + guestdate + "," + rentdate + "," + rentaladdress + "," + rentalcitystzip + "," + rtitle;
-}
-
 function setRheader() {
-   var rentaladdress = window.sessionStorage.getItem("rentaladdress")
-   var rentalcitystzip = window.sessionStorage.getItem("rentalcitystzip")
-   var rtitle = window.sessionStorage.getItem("rtitle")
-   var headername = window.sessionStorage.getItem("headername")
+   var rentaladdress = window.sessionStorage.getItem("rentaprentaladdress")
+   var rentalcitystzip = window.sessionStorage.getItem("rentaprentalcitystzip")
+   var rtitle = window.sessionStorage.getItem("rentaprtitle")
+   var headername = window.sessionStorage.getItem("rentapheadername")
    if (rentaladdress) document.getElementById('rentaladdress').value = rentaladdress;
    if (rentalcitystzip) document.getElementById('rentalcitystzip').value = rentalcitystzip;
    if (rtitle) document.getElementById('rtitle').value = rtitle;
    if (headername) document.getElementById('headername').value = headername;
 }
 
-function importCSV() {
-   var csv = document.getElementById('csv').value
-   if (csv === "") csv = window.sessionStorage.getItem("csv");
-   var row = window.sessionStorage.getItem("CSVi");
-   var headername = window.sessionStorage.getItem('headername');
-   var csvfield = csv.split("\"\,\"")
-   var fullname = csvfield[0].slice(1)
-   var ssnumber = csvfield[1]
-   var birthdate = csvfield[2]
-   var maritalstatus = csvfield[3]
-   var email = csvfield[4]
-   var stateid = csvfield[5]
-   var phone1 = csvfield[6]
-   var phone2 = csvfield[7]
-   var currentaddress = csvfield[8]
-   var previousaddresses = csvfield[9]
-   var occupants = csvfield[10]
-   var pets = csvfield[11]
-   var income = csvfield[12]
-   var employment = csvfield[13]
-   var evictions = csvfield[14]
-   var felonies = csvfield[15]
-   var authdate = csvfield[16]
-   var guestdate = csvfield[17]
-   var rentdate = csvfield[18]
-   var rentaladdress = ""
-   if(typeof(csvfield[19]) === 'undefined') rentaladdress="enter rental address";
-   else rentaladdress=csvfield[19];
-   var rentalcitystzip = ""
-   if(typeof(csvfield[20]) === 'undefined') rentalcitystzip="enter city, state, zip";
-   else rentalcitystzip=csvfield[20];
-   var rtitle = ""
-   if(typeof(csvfield[21]) === 'undefined') rtitle="enter title";
-   else rtitle=csvfield[21].slice(0,csvfield[21].indexOf("\""));
+function setCSVdata() {
+   var arr = [
+      [document.getElementById('fullname').value,
+      document.getElementById('ssnumber').value,
+      document.getElementById('birthdate').value,
+      document.getElementById('maritalstatus').value,
+      document.getElementById('email').value,
+      document.getElementById('stateid').value,
+      document.getElementById('phone1').value,
+      document.getElementById('phone2').value,
+      document.getElementById('currentaddress').value,
+      document.getElementById('previousaddresses').value,
+      document.getElementById('occupants').value,
+      document.getElementById('pets').value,
+      document.getElementById('income').value,
+      document.getElementById('employment').value,
+      document.getElementById('evictions').value,
+      document.getElementById('felonies').value,
+      document.getElementById('authdate').value,
+      document.getElementById('guestdate').value.replace(/\n/g," "), //newlines in the date boxes aren't handled correctly by UCSV v1.0.2
+      document.getElementById('rentdate').value.replace(/\n/g," "),
+      document.getElementById('rentaladdress').value,
+      document.getElementById('rentalcitystzip').value,
+      document.getElementById('rtitle').value]
+   ]
    
-   document.getElementById('rownumber').value = window.sessionStorage.getItem("CSVi");
+   document.getElementById('csv').value = CSV.arrayToCsv(arr); //CSV.arrayToCsv comes from UCSV v1.0.2
+}
+
+function importCSV() {
+   var csv = document.getElementById('csv').value;
+   if(window.sessionStorage.getItem("rentapCSVi") === null) {
+      window.sessionStorage.setItem("rentapCSVi","0");
+   }
+   var row = window.sessionStorage.getItem("rentapCSVi");
+   var csvfield = CSV.csvToArray(csv)[0]; //CSV.csvToArray comes from UCSV v1.0.2
+   
+   if(typeof(csvfield[0]) === 'undefined') var fullname = "";
+      else var fullname = csvfield[0];
+   if(typeof(csvfield[1]) === 'undefined') var ssnumber = "";
+      else var ssnumber = csvfield[1];
+   if(typeof(csvfield[2]) === 'undefined') var birthdate = "";
+      else var birthdate = csvfield[2];
+   if(typeof(csvfield[3]) === 'undefined') var maritalstatus = "";
+      else var maritalstatus = csvfield[3];
+   if(typeof(csvfield[4]) === 'undefined') var email = "";
+      else var email = csvfield[4];
+   if(typeof(csvfield[5]) === 'undefined') var stateid = "";
+      else var stateid = csvfield[5];
+   if(typeof(csvfield[6]) === 'undefined') var phone1 = "";
+      else var phone1 = csvfield[6];
+   if(typeof(csvfield[7]) === 'undefined') var phone2 = "";
+      else var phone2 = csvfield[7];
+   if(typeof(csvfield[8]) === 'undefined') var currentaddress = "";
+      else var currentaddress = csvfield[8];
+   if(typeof(csvfield[9]) === 'undefined') var previousaddresses = "";
+      else var previousaddresses = csvfield[9];
+   if(typeof(csvfield[10]) === 'undefined') var occupants = "";
+      else var occupants = csvfield[10];
+   if(typeof(csvfield[11]) === 'undefined') var pets = "";
+      else var pets = csvfield[11];
+   if(typeof(csvfield[12]) === 'undefined') var income = "";
+      else var income = csvfield[12];
+   if(typeof(csvfield[13]) === 'undefined') var employment = "";
+      else var employment = csvfield[13];
+   if(typeof(csvfield[14]) === 'undefined') var evictions = "";
+      else var evictions = csvfield[14];
+   if(typeof(csvfield[15]) === 'undefined') var felonies = "";
+      else var felonies = csvfield[15];
+   if(typeof(csvfield[16]) === 'undefined') var authdate = "";
+      else var authdate = csvfield[16];
+   if(typeof(csvfield[17]) === 'undefined') var guestdate = "";
+      else var guestdate = csvfield[17];
+   if(typeof(csvfield[18]) === 'undefined') var rentdate = "";
+      else var rentdate = csvfield[18];
+   if(typeof(csvfield[19]) === 'undefined') var rentaladdress="enter rental address";
+      else var rentaladdress = csvfield[19];
+   if(typeof(csvfield[20]) === 'undefined') var rentalcitystzip="enter city, state, zip";
+      else var rentalcitystzip = csvfield[20];
+   if(typeof(csvfield[21]) === 'undefined') var rtitle="enter title";
+      else var rtitle = csvfield[21];
+
+   document.getElementById('rownumber').value = row;
    document.getElementById('fullname').value = fullname;
    document.getElementById('ssnumber').value = ssnumber;
    document.getElementById('birthdate').value = birthdate;
@@ -130,5 +381,37 @@ function importCSV() {
    document.getElementById('headername').value="";
 }
 
+function importJSON() {
+   var rentapJSON = window.sessionStorage.getItem("rentapJSON");
+   var rentap = JSON.parse(rentapJSON);
+   var rentapfield = rentap[0];
+   var row = window.sessionStorage.getItem("rentapCSVi");
+   
+   document.getElementById('rownumber').value = row;
+   document.getElementById('fullname').value = rentapfield[0];
+   document.getElementById('ssnumber').value = rentapfield[1];
+   document.getElementById('birthdate').value = rentapfield[2];
+   document.getElementById('maritalstatus').value = rentapfield[3];
+   document.getElementById('email').value = rentapfield[4];
+   document.getElementById('stateid').value = rentapfield[5];
+   document.getElementById('phone1').value = rentapfield[6];
+   document.getElementById('phone2').value = rentapfield[7];
+   document.getElementById('currentaddress').value = rentapfield[8];
+   document.getElementById('previousaddresses').value = rentapfield[9];
+   document.getElementById('occupants').value = rentapfield[10];
+   document.getElementById('pets').value = rentapfield[11];
+   document.getElementById('income').value = rentapfield[12];
+   document.getElementById('employment').value = rentapfield[13];
+   document.getElementById('evictions').value = rentapfield[14];
+   document.getElementById('felonies').value = rentapfield[15];
+   document.getElementById('authdate').value = rentapfield[16];
+   document.getElementById('guestdate').value = rentapfield[17];
+   document.getElementById('rentdate').value = rentapfield[18];
+   document.getElementById('rentaladdress').value = rentapfield[19];
+   document.getElementById('rentalcitystzip').value = rentapfield[20];
+   document.getElementById('rtitle').value = rentapfield[21];
+   document.getElementById('rowprint').value=row;
+   document.getElementById('headername').value="";
+}
 
 

@@ -6,11 +6,11 @@ butt.addEventListener("click",                  //handle onclick event
    function(){
       var jumptorow = document.getElementById("rownumber").value
       self.postMessage(jumptorow); //first tell worker what to jump to
-      self.on("message", function(csv) {  //then worker returns the data to be displayed
-         if (csv != "error") {
-            window.sessionStorage.setItem('csv', csv);
-            window.sessionStorage.setItem('CSVi',jumptorow);
-            window.sessionStorage.setItem('mode','edit');
+      self.on("message", function(rentap) {  //then worker returns the data to be displayed
+         if (rentap != "error") {
+            window.sessionStorage.setItem("rentapJSON", JSON.stringify(rentap));
+            window.sessionStorage.setItem('rentapCSVi',jumptorow);
+            window.sessionStorage.setItem('rentapmode','edit');
          }
       }); 
    },

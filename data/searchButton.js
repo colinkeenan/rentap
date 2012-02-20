@@ -9,29 +9,14 @@ butt.addEventListener("click",                  //handle onclick event
          self.postMessage("showAllNames");
       } else {
          self.postMessage(document.getElementById('findname').value);     // sends search-box text to saveButton.PageMod worker
-         self.on("message", function(foundnames) {
-            var CSV = foundnames[1];
-            window.sessionStorage.setItem('csv', CSV[1]);
-            window.sessionStorage.setItem('CSVi',CSV[0]);
-            window.sessionStorage.setItem('mode','edit');
-            var i=1;
-            var names = "";
-            var rows = "";
-            while(i<foundnames.length) {
-               var CSV = foundnames[i];
-               
-               rows = rows + CSV[0] + ",";
-               
-               var csvfield = CSV[1].split("\"\,\"");
-               var fullname = csvfield[0].slice(1);
-               names = names + fullname + ",";
-               
-               i++;
+         self.on("message", function(found) {
+            if(typeof(found[1]) != 'undefined') {
+               var RENTAP = found[1];  //save 1st found to be displayed right away
+               window.sessionStorage.setItem('rentapJSON', JSON.stringify([RENTAP[1]])); //RENTAP[1] is the data to be displayed
+               window.sessionStorage.setItem('rentapCSVi',RENTAP[0]); //RENTAP[0] is the row RENTAP[1] is on
+               window.sessionStorage.setItem('rentapmode','edit');
+               window.sessionStorage.setItem('rentapJSONfound',JSON.stringify(found)); //save so Choose Name can display found names
             }
-            rows = rows.slice(0,rows.indexOf("\,!"));
-            names = names.slice(0,names.indexOf("\,!"));
-            window.sessionStorage.setItem('foundrows',rows);
-            window.sessionStorage.setItem('foundnames',names);
          });
       }
    },
