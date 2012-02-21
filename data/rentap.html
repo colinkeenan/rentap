@@ -164,16 +164,17 @@ Print____________________________________
                   <div style="padding:14px" />
                </li>
                <li>
-                  <input type="button" class="button" onClick="javascript:setCSVdata();" value="Generate CSV"/>
-                  <input type="button" class="button" onClick="javascript:importCSV();" value="Import CSV"/>
+                  <div id="generateCsvButton" class="inline"></div>
+                  <div id="importCsvButton" class="inline"></div>
                   <textarea id="csv" cols="24" rows="6"></textarea>
-                  <div id="copyCSVdataButton"></div>
+                  <div id="copyCSVdataButton" class="inline"></div>
+                  <input id="clearCSVbutton" type="button" class="inlinebutton" onClick="javascript:clearCSV();" value="Clear CSV"/>
                </li>
                <li>
                   <div style="padding:14px" />
                </li>
                <li>
-                  <input id="SQLbutton" class="button" type="button" onClick="javascript:setSqlInsertText();" value="Generate SQL"/>
+                  <input id="SQLbutton" type="button" class="button" onClick="javascript:setSqlInsertText();" value="Generate SQL"/>
                   <textarea id="sqlinsert" cols="24" rows="6"></textarea>
                   <div id="copySQLtextButton"></div>
                </li>

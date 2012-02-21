@@ -1,5 +1,5 @@
 var butt = document.createElement("button");             //define button element
-var btext = document.createTextNode("Save New");         //define the text
+var btext = document.createTextNode("Generate CSV");     //define the text
 butt.appendChild(btext);                                 //attach text to the button
 
 butt.addEventListener("click", 
@@ -32,21 +32,12 @@ butt.addEventListener("click",
    
       window.sessionStorage.setItem("rentapJSON", JSON.stringify(rentap));  //store the data in sessionStorage to be displayed on the form when refreshed
      
-      var mode = window.sessionStorage.getItem('rentapmode');
-      if (mode==="edit") {
-         window.alert("Warning: this application has already been saved in the past. Clicking 'Save New' again will save another copy leaving the original untouched. If that's not what you want to do, click 'Save Edit' instead.");
-         window.sessionStorage.setItem('rentapmode','newedit'); //although session storage mode has been changed to 'newedit', mode is still 'edit' until the next time this function is called
-      }
+      self.postMessage(rentap);  //send data to worker to convert it to CSV
 
-      self.postMessage([rentap,mode]);  //send data to saveButton.PageMod worker to save it in a simple-storage csv array if mode is 'new' or 'newedit'
-
-      self.on("message", function(row) {   // gets "row" back from saveButton.PageMod worker
-         if (mode==='new' || mode==='newedit') {  //if mode is edit, nothing was saved, and nothing to do here
-            window.sessionStorage.setItem('rentapCSVi',row);
-            window.sessionStorage.setItem('rentapmode','edit'); //having saved the application, further changes would be an edit
-         }
+      self.on("message", function(rentapCSV) {   // gets CSV back from worker
+            window.sessionStorage.setItem('rentapCSV',rentapCSV); //worker will refresh the page and rentapCSV will be displayed in the appropriate box
       });
    },
 false);
-document.getElementById("savebutton").appendChild(butt); //put the button on the page
+document.getElementById("generateCsvButton").appendChild(butt); //put the button on the page
 

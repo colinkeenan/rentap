@@ -17,4 +17,5 @@ td {vertical-align:top; max-width:330px}
 label {font: 14px/16px sans-serif; display: inline-block; min-width: 78px}
 .button {max-width: 9em}
 .inline {display: inline-block;}
+.inlinebutton {display: inline-block; max-width: 9em}
 #findname {width: 250px}
