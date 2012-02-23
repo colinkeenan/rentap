@@ -1,14 +1,15 @@
 #rentapheader {width: 972px; margin:0px}
-#tdrtitle,#rtitle {font:26px/32px sans-serif; font-weight: bold; text-align:center; border-width:0px; vertical-align:top; max-width:400px; width:400px; margin:0px; padding:0px;display: inline-block}
+#tdrtitle,#rtitle {font:26px/32px sans-serif; font-weight: bold; text-align:center; border-width:0px; vertical-align:top; max-width:400px; width:400px; margin:0px; padding:0px;display: inline-block; height: 40px}
 #rentaladdress, #rentalcitystzip {font:12px/16px serif; font-weight: bold; border-width:0px; vertical-align:top; max-width: 180px; width: 180px; max-height: 18px; margin:0px; padding:0px; display: block}
 #authdate, #guestdate, #rentdate {width:6em}
 #rowprint {width:3em; border-width:0px;}
 ul {margin-left:0px; padding-left:5px;}
 #controls, #headercontrols {display:none}
 li {list-style: none;}
-textarea {font:14px/18px serif;}
-.personalinfo {margin-left: 5px}
-input {font:14px/16px serif; width: 15em}
-td {vertical-align:top; max-width:312px}
+textarea {font:15px/19px serif; border-style:solid}
+.personalinfo {margin-left: 5px; }
+#fullname {margin-top: 2px}
+input {font:14px/19px serif; width: 16em; margin-bottom: 3px; height: 19px; border-style:solid}
+td {vertical-align:top; max-width:330px; }
 label {font: 13px/16px sans-serif; display: inline-block; min-width: 71px}
 

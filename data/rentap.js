@@ -1,31 +1,43 @@
+function SQLquote(data) { //this comes from amo-editors@mozilla.org in email from Reviewer: Kris Maglione
+    switch (typeof data) {
+    case "string":
+        return "'" + data.replace(/'/g, "'''") + "'";
+    case "number":
+        return String(data);
+    default:
+        throw Error("Invalid datatype");
+    }
+}
+
 function setSqlInsertText() {
-   var fullname = "\'" + document.getElementById('fullname').value.replace(/\'/g,"\'\'") + "\'"
-   var ssnumber = "\'" + document.getElementById('ssnumber').value.replace(/\'/g,"\'\'") + "\'"
-   var birthdate = "\'" + document.getElementById('birthdate').value.replace(/\'/g,"\'\'") + "\'"
-   var maritalstatus = "\'" + document.getElementById('maritalstatus').value.replace(/\'/g,"\'\'") + "\'"
-   var email = "\'" + document.getElementById('email').value.replace(/\'/g,"\'\'") + "\'"
-   var stateid = "\'" + document.getElementById('stateid').value.replace(/\'/g,"\'\'") + "\'"
-   var phone1 = "\'" + document.getElementById('phone1').value.replace(/\'/g,"\'\'") + "\'"
-   var phone2 = "\'" + document.getElementById('phone2').value.replace(/\'/g,"\'\'") + "\'"
-   var currentaddress = "\'" + document.getElementById('currentaddress').value.replace(/\'/g,"\'\'") + "\'"
-   var previousaddresses = "\'" + document.getElementById('previousaddresses').value.replace(/\'/g,"\'\'") + "\'"
-   var occupants = "\'" + document.getElementById('occupants').value.replace(/\'/g,"\'\'") + "\'"
-   var pets = "\'" + document.getElementById('pets').value.replace(/\'/g,"\'\'") + "\'"
-   var income = "\'" + document.getElementById('income').value.replace(/\'/g,"\'\'") + "\'"
-   var employment = "\'" + document.getElementById('employment').value.replace(/\'/g,"\'\'") + "\'"
-   var evictions = "\'" + document.getElementById('evictions').value.replace(/\'/g,"\'\'") + "\'"
-   var felonies = "\'" + document.getElementById('felonies').value.replace(/\'/g,"\'\'") + "\'"
-   var authdate = "\'" + document.getElementById('authdate').value.replace(/\'/g,"\'\'") + "\'"
-   var guestdate = "\'" + document.getElementById('guestdate').value.replace(/\'/g,"\'\'") + "\'"
-   var rentdate = "\'" + document.getElementById('rentdate').value.replace(/\'/g,"\'\'") + "\'"
-   var rentaladdress = "\'" + document.getElementById('rentaladdress').value + "\'"
-   var rentalcitystzip = "\'" + document.getElementById('rentalcitystzip').value + "\'"
-   var rtitle = "\'" + document.getElementById('rtitle').value + "\'"
-   
-   document.getElementById('sqlinsert').value =
-   
-   "INSERT OR REPLACE INTO rentap VALUES(" + 
-   fullname + ", " + ssnumber + ", " + birthdate + ", " + maritalstatus + ", " + email + ", " + stateid + ", " +  phone1 + ", " + phone2 + ", " + currentaddress + ", " + previousaddresses + ", " + occupants + ", " + pets + ", " + income + ", " + employment + ", " + evictions + ", " + felonies + ", " + authdate + ", " + guestdate + ", " + rentdate + ", " + rentaladdress + "," + rentalcitystzip + "," + rtitle + ")";
+   var rentap = [
+         document.getElementById('fullname').value,  //0
+         document.getElementById('ssnumber').value,   //1
+         document.getElementById('birthdate').value,  //2
+         document.getElementById('maritalstatus').value, //3
+         document.getElementById('email').value,      //4
+         document.getElementById('stateid').value,    //5
+         document.getElementById('phone1').value,     //6
+         document.getElementById('phone2').value,     //7
+         document.getElementById('currentaddress').value,   //8
+         document.getElementById('previousaddresses').value,   //9
+         document.getElementById('occupants').value,  //10
+         document.getElementById('pets').value,       //11
+         document.getElementById('income').value,     //12
+         document.getElementById('employment').value, //13
+         document.getElementById('evictions').value,  //14
+         document.getElementById('felonies').value,   //15
+         document.getElementById('authdate').value,   //16
+         document.getElementById('guestdate').value, //17 
+         document.getElementById('rentdate').value,  //18
+         document.getElementById('rentaladdress').value, //19
+         document.getElementById('rentalcitystzip').value,  //20
+         document.getElementById('rtitle').value     //21
+      ]
+   var SQLquotedRentap = []
+   for(var i=0; i<22; i++) SQLquotedRentap[i] = SQLquote(rentap[i]);
+
+   document.getElementById('sqlinsert').value = "INSERT OR REPLACE INTO rentap VALUES(" + SQLquotedRentap + ")";
 }
 
 function setRheader() {
