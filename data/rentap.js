@@ -1,7 +1,7 @@
 function SQLquote(data) { //this comes from amo-editors@mozilla.org in email from Reviewer: Kris Maglione
     switch (typeof data) {
     case "string":
-        return "'" + data.replace(/'/g, "'''") + "'";
+        return "'" + data.replace(/'/g, "''") + "'"; //In the email, this replaced single quotes with 3 single quotes, but SQLite Manager says that's a syntax error. Two single quotes works though.
     case "number":
         return String(data);
     default:
