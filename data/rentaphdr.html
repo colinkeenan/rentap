@@ -153,15 +153,21 @@ Print____________________________________
                <li>
                   <div id="prevbutton" class="inline"></div>
                   <label for="rownumber" style="max-width:30px; min-width: 2px;">row</label>
-                  <input type="text" id="rownumber" class="inline" style="max-width: 30px;" value=""/>
+                  <input type="text" id="rownumber" class="inline" style="max-width: 30px;" title="On row 0, you'll find printable instructions for applicants." value=""/>
                   <div id="jumpbutton" class="inline"></div>
                   <div id="nextbutton" class="inline"></div>
-                  <input type="text" id="findname" value="" />
-                  <div id="searchbutton" class="inline"></div>
+                  <input type="text" id="findname" title="Hint: Use &quot; to search names only. For example, &quot;d, for names starting with D." value="" />
+                  <div id="searchbutton" class="inline" title="Click while empty to clear previous search and list all names."></div>
                   <div id="listsearchmenu" class="inline"></div>
                </li>
                <li>
-                  <div style="padding:14px" />
+                  <div style="padding:8px" />
+               </li>
+               <li>
+                  <strong>Printing</strong> Either ctrl-p or File->Print... Scale 100%. In Page Setup, Paper Orientation Landscape. In Options, headers and footers blank.
+               </li>
+               <li>
+                  <div style="padding:8px" />
                </li>
                <li>
                   <div id="generateCsvButton" class="inline"></div>
@@ -174,9 +180,9 @@ Print____________________________________
                   <div style="padding:14px" />
                </li>
                <li>
-                  <input id="SQLbutton" class="button" type="button" onClick="javascript:setSqlInsertText();" value="Generate SQL"/>
+                  <input id="SQLbutton" type="button" class="button" onClick="javascript:setSqlInsertText();" class="inline" value="Generate SQL"/>
+                  <div id="copySQLtextButton" class="inline"></div>
                   <textarea id="sqlinsert" cols="24" rows="6"></textarea>
-                  <div id="copySQLtextButton"></div>
                </li>
             </ul>
          </td>
