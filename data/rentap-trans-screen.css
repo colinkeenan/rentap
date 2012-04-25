@@ -1,4 +1,4 @@
-#rentapheader {min-width: 1256px; margin:0px}
+#rentapheader {max-width: 1260px; margin:0px}
 #headercontrols {min-width: 240px; max-width: 240px}
 #controls, #headercontrols {margin-left:20px; padding-left:20px;}
 #tdrtitle,#rtitle {font:26px sans-serif; font-weight: bold; text-align:center; border-width:0px; vertical-align:top; max-width:400px; width:400px; margin:0px; padding:0px;display: inline-block}
@@ -14,7 +14,7 @@ textarea {font:14px serif;}
 #income,#employment {max-height:149px}
 #evictions,#felonies {max-height:102px}
 input {font:14px serif; width:16em}
-td {vertical-align:top; max-width:330px}
+td {vertical-align:top; max-width:330px; width:330px}
 label, .section_header {font: 14px serif; display: inline-block; min-width: 78px; max-width: 288px; vertical-align:bottom; white-space: nowrap; overflow: hidden}
 .button {max-width: 9em}
 .inline {display: inline-block;}
@@ -22,3 +22,6 @@ label, .section_header {font: 14px serif; display: inline-block; min-width: 78px
 #findname {width: 250px}
 .smalllabelinput {font:12px sans-serif; position: relative; top: -6px; display:block; width:6em;}
 #currentaddresslabel {margin-top:16px}
+.pi-instructions {font:14px serif; width:226px; min-width:226px; max-width:226px; height: 20px; display:inline-block; vertical-align:middle; margin-top: 3px; border-style:solid; border-width:1px; border-color:silver; white-space: nowrap; overflow: hidden }
+.instructions {font:14px serif;vertical-align:middle; margin-top: 3px; margin-right: 15px; border-style:solid; border-width:1px; border-color:silver; max-width:310px; width:310px; min-height:100px}
+#employment-instructions {min-height:180px}
