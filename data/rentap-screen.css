@@ -10,7 +10,7 @@
 ul {margin-left:0px; padding-left:0px;}
 li {list-style: none;}
 textarea {font:14px serif;}
-.personalinfo {margin-left: 5px; max-width: 78px;}
+.personalinfo {margin-left: 5px; max-width: 78px; vertical-align:middle}
 #income,#employment {max-height:149px}
 #evictions,#felonies {max-height:102px}
 input {font:14px serif; width:16em}
