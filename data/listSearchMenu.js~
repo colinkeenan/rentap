@@ -9,7 +9,7 @@ if(JSONfound != null) var found = JSON.parse(JSONfound); //back to actual array 
    else var found = [[]]
    
 self.on("message", function(rentap) {
-   if(found === null) {
+   if(found[0][0] === null) {
       while (searchSel.length < rentap.length) {     //Everytime the page is refreshed, and there's no found names, populate
          var namei = document.createElement("option"); //the search dropdown list from rentap that came from the worker
          var i = searchSel.length;                 //which contains all the applications

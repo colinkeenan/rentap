@@ -47,7 +47,7 @@ if(typeof(ss.storage.csv) === 'undefined') { //initialize csv[0] to be an instru
 '\n' +
 '\nPosition, # hours/wk, under' +
 '\nMs. Supervisor 555-111-1111' +
-'\nfor # months/years","Company or Person that evicted you in Month/Year from Address, City, ST  Zip","Offense, County, State, Date, D.O.C. ID, and, if currently on parole/probation, include P.O. name and phone number.","mo/dy/year","","","","","Instructions by Example"'];
+'\nfor # months/years","Company or Person that evicted you in Month/Year from Address, City, ST  Zip","Offense, County, State, Date. If currently on parole, include parole officer name and phone number.","mo/dy/year","","","","","Instructions by Example"'];
 }
 if(typeof(ss.storage.RHEADER) === 'undefined') {
   ss.storage.RHEADER = [["enter rental address","enter city, state, zip","enter title","enter header name"]];

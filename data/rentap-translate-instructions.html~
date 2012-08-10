@@ -156,7 +156,7 @@
                <li>
                   <label for="felonies"><strong>Felonies/Drug Convictions</strong></label>
                   <div id="felonies" class="instructions">
-                     Offense, County, State, Date, D.O.C. ID, and, if currently on parole/probation, include P.O. name and phone number.</div>
+                     Offense, County, State, Date. If currently on parole, include parole officer name and phone number.</div>
                </li>
                <li>
                   <label style="position: relative; top: 7px;"><strong>Applicant Authorization</strong></label>
