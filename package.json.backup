@@ -1,8 +1,0 @@
-{
-  "name": "rentap",
-  "fullName": "Room Rental Application",
-  "description": "View and add Rental Applications to rentap.sqlite (3835 Park Ave, Kansaas City, MO 64109)",
-  "Colin Keenan": "",
-  "license": "MPL 1.1/GPL 2.0/LGPL 2.1",
-  "version": "0.1"
-}

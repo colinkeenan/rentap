@@ -11,7 +11,7 @@ li {list-style: none;}
 textarea {font:15px serif; border-style:solid}
 .personalinfo {margin-left: 5px; max-width: 71px; vertical-align:middle}
 #fullname {margin-top: 2px}
-input {font:14px serif; width: 16em; margin-bottom: 3px; height: 19px; border-style:solid}
+input {font:14px serif; width: 15em; margin-bottom: 3px; height: 19px; border-style:solid}
 td {vertical-align:top; max-width:330px; }
 label, .section_header {font: 14px serif; display: inline-block; min-width: 71px; max-width: 288px; vertical-align:bottom; white-space: nowrap; overflow: hidden}
 .smalllabelinput {font:12px sans-serif; position: relative; top: -6px; display:block; width:6em;}
