@@ -4,7 +4,6 @@ butt.appendChild(btext);                                 //attach text to the bu
 
 butt.addEventListener("click", 
    function() {                                          //handle onclick event
-         
       var rentap = [
          [document.getElementById('fullname').value,  //0
          document.getElementById('ssnumber').value,   //1
@@ -29,23 +28,21 @@ butt.addEventListener("click",
          document.getElementById('rentalcitystzip').value,  //20
          document.getElementById('rtitle').value]     //21
       ]
-   
-      window.sessionStorage.setItem("rentapJSON", JSON.stringify(rentap));  //store the data in sessionStorage to be displayed on the form when refreshed
-     
       var mode = window.sessionStorage.getItem('rentapmode');
       if (mode==="edit") {
          window.alert("Warning: this application has already been saved in the past. Clicking 'Save New' again will save another copy leaving the original untouched. If that's not what you want to do, click 'Save Edit' instead.");
          window.sessionStorage.setItem('rentapmode','newedit'); //although session storage mode has been changed to 'newedit', mode is still 'edit' until the next time this function is called
       }
-
-      self.postMessage([rentap,mode]);  //send data to saveButton.PageMod worker to save it in a simple-storage csv array if mode is 'new' or 'newedit'
-
-      self.on("message", function(row) {   // gets "row" back from saveButton.PageMod worker
-         if (mode==='new' || mode==='newedit') {  //if mode is edit, nothing was saved, and nothing to do here
-            window.sessionStorage.setItem('rentapCSVi',row);
-            window.sessionStorage.setItem('rentapmode','edit'); //having saved the application, further changes would be an edit
-         }
-      });
+      if (mode==='new' || mode==='newedit') {  //if mode is edit, nothing was saved, and nothing to do here
+         csvarray = JSON.parse(window.sessionStorage.getItem('rentapcsvJSON'));
+         csvarray.push(rentap);
+         window.sessionStorage.setItem("rentapcsvJSON",JSON.stringify(csvarray));
+         var row = csvarray.length-1;
+         document.getElementById('rownumber').value = row;
+         window.sessionStorage.setItem('rentaprow',row);
+         window.sessionStorage.setItem('rentapmode','edit'); //having saved the application, further changes would be an edit
+         self.postMessage(rentap); //save in simple storage 
+      }
    },
 false);
 document.getElementById("savebutton").appendChild(butt); //put the button on the page

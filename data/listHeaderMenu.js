@@ -38,8 +38,8 @@ sel.onchange =
             document.getElementById('evictions').value,
             document.getElementById('felonies').value,
             document.getElementById('authdate').value,
-            document.getElementById('guestdate').value.replace(/\n/g," "), //newlines in the date boxes aren't handled correctly by UCSV v1.0.2
-            document.getElementById('rentdate').value.replace(/\n/g," "),
+            document.getElementById('guestdate').value,
+            document.getElementById('rentdate').value,
             document.getElementById('rentaladdress').value,
             document.getElementById('rentalcitystzip').value,
             document.getElementById('rtitle').value]
@@ -48,7 +48,7 @@ sel.onchange =
          window.sessionStorage.setItem("rentapJSON", JSON.stringify(rentap));  //store the data in sessionStorage to be displayed on the form when refreshed
      
          var i = sel.selectedIndex;
-         var rheader = RHEADER[i]
+         var rheader = RHEADER[i];
          window.sessionStorage.setItem("rentaprentaladdress",rheader[0]); 
          window.sessionStorage.setItem("rentaprentalcitystzip",rheader[1]); 
          window.sessionStorage.setItem("rentaprtitle",rheader[2]);

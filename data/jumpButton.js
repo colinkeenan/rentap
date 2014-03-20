@@ -1,19 +1,16 @@
-var butt = document.createElement("button");    //define button element
-var btext = document.createTextNode("Jump");  //define the text
-butt.appendChild(btext);                        //attach text to the button
+//in sessionStorage:
+//   rentapRHEADERJSON (array of rentap headers)
+//   rentapRHEADERi    (index of last header used)
+//   rentapcsvJSON     (array of rentap applications as csv)
+//   rentaprow         (index of last application displayed)
 
-butt.addEventListener("click",                  //handle onclick event
-   function(){
-      var jumptorow = document.getElementById("rownumber").value
-      self.postMessage(jumptorow); //first tell worker what to jump to
-      self.on("message", function(rentap) {  //then worker returns the data to be displayed
-         if (rentap != "error") {
-            window.sessionStorage.setItem("rentapJSON", JSON.stringify(rentap));
-            window.sessionStorage.setItem('rentapCSVi',jumptorow);
-            window.sessionStorage.setItem('rentapmode','edit');
-         }
-      }); 
-   },
-false);
-
-document.getElementById("jumpbutton").appendChild(butt); //put the button on the page
+function jumpButton(){
+   var csv = JSON.parse(window.sessionStorage.getItem("rentapcsvJSON"));
+   var jumptorow = document.getElementById("rownumber").value;
+   var rentap = CSV.csvToArray(csv[jumptorow]);
+   if (jumptorow<=csv.length-1 && jumptorow>=0) {
+      window.sessionStorage.setItem("rentapJSON", JSON.stringify(rentap));
+      window.sessionStorage.setItem('rentapCSVi',jumptorow);
+      window.sessionStorage.setItem('rentapmode','edit');
+   }
+}

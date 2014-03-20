@@ -6,46 +6,41 @@ butt.addEventListener("click",
    function() {                                          //handle onclick event
       
       var rentap = [
-         [document.getElementById('fullname').value,
-         document.getElementById('ssnumber').value,
-         document.getElementById('birthdate').value,
-         document.getElementById('maritalstatus').value,
-         document.getElementById('email').value,
-         document.getElementById('stateid').value,
-         document.getElementById('phone1').value,
-         document.getElementById('phone2').value,
-         document.getElementById('currentaddress').value,
-         document.getElementById('previousaddresses').value,
-         document.getElementById('occupants').value,
-         document.getElementById('pets').value,
-         document.getElementById('income').value,
-         document.getElementById('employment').value,
-         document.getElementById('evictions').value,
-         document.getElementById('felonies').value,
-         document.getElementById('authdate').value,
-         document.getElementById('guestdate').value.replace(/\n/g," "), //newlines in the date boxes aren't handled correctly by UCSV v1.0.2
-         document.getElementById('rentdate').value.replace(/\n/g," "),
-         document.getElementById('rentaladdress').value,
-         document.getElementById('rentalcitystzip').value,
-         document.getElementById('rtitle').value]
+         [document.getElementById('fullname').value,  //0
+         document.getElementById('ssnumber').value,   //1
+         document.getElementById('birthdate').value,  //2
+         document.getElementById('maritalstatus').value, //3
+         document.getElementById('email').value,      //4
+         document.getElementById('stateid').value,    //5
+         document.getElementById('phone1').value,     //6
+         document.getElementById('phone2').value,     //7
+         document.getElementById('currentaddress').value,   //8
+         document.getElementById('previousaddresses').value,   //9
+         document.getElementById('occupants').value,  //10
+         document.getElementById('pets').value,       //11
+         document.getElementById('income').value,     //12
+         document.getElementById('employment').value, //13
+         document.getElementById('evictions').value,  //14
+         document.getElementById('felonies').value,   //15
+         document.getElementById('authdate').value,   //16
+         document.getElementById('guestdate').value, //17 
+         document.getElementById('rentdate').value,  //18
+         document.getElementById('rentaladdress').value, //19
+         document.getElementById('rentalcitystzip').value,  //20
+         document.getElementById('rtitle').value]     //21
       ]
    
-      window.sessionStorage.setItem("rentapJSON", JSON.stringify(rentap));  //store the data in sessionStorage to be displayed on the form when refreshed
-      
-      var address = document.getElementById('rentaladdress').value
-      var citystatezip = document.getElementById('rentalcitystzip').value
-      var title = document.getElementById('rtitle').value
-      var headername = document.getElementById('headername').value
-      window.sessionStorage.setItem("rentaprentaladdress",address);
-      window.sessionStorage.setItem("rentaprentalcitystzip",citystatezip);
-      window.sessionStorage.setItem("rentaprtitle",title);
-      window.sessionStorage.setItem("rentapheadername",headername);
-      
-      var rheader = [address,citystatezip,title,headername];
+      var address = document.getElementById('rentaladdress').value;
+      var citystatezip = document.getElementById('rentalcitystzip').value;
+      var title = document.getElementById('rtitle').value;
+      var headername = document.getElementById('headername').value;
+      var rheader = [address,citystatezip,title,headername]
+      var RHEADER = JSON.parse(window.sessionStorage.getItem("rentapRHEADERJSON"));
+      RHEADER.push(rheader);
+      window.sessionStorage.setItem("rentapRHEADERJSON",JSON.stringify(RHEADER));
+      var i = RHEADER.length-1;
+      window.sessionStorage.setItem("rentapRHEADERi", i); 
       self.postMessage(rheader); //send header to worker to be saved in simple-storage
-      self.on("message", function(RHEADERi) {
-         window.sessionStorage.setItem("rentapRHEADERi",RHEADERi); //worker returns index of saved header, saved here to keep track of it
-      });
    },
 false);
 document.getElementById("saverheaderbutton").appendChild(butt); //put the button on the page

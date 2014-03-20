@@ -4,7 +4,6 @@ butt.appendChild(btext);                                 //attach text to the bu
 
 butt.addEventListener("click", 
    function() {                                 //handle onclick event
-         
       var rentap = [
          [document.getElementById('fullname').value,  //0
          document.getElementById('ssnumber').value,   //1
@@ -23,23 +22,24 @@ butt.addEventListener("click",
          document.getElementById('evictions').value,  //14
          document.getElementById('felonies').value,   //15
          document.getElementById('authdate').value,   //16
-         document.getElementById('guestdate').value, //17
+         document.getElementById('guestdate').value, //17 
          document.getElementById('rentdate').value,  //18
          document.getElementById('rentaladdress').value, //19
          document.getElementById('rentalcitystzip').value,  //20
          document.getElementById('rtitle').value]     //21
       ]
-   
-      window.sessionStorage.setItem("rentapJSON", JSON.stringify(rentap));  //store the data in sessionStorage to be displayed on the form when refreshed
-      
-      var row = window.sessionStorage.getItem('rentapCSVi');
+      var row = window.sessionStorage.getItem('rentaprow');
       var mode = window.sessionStorage.getItem('rentapmode');
       if (mode==="new") {
          window.alert("Warning: this application has never been saved before. Clicking 'Save Edit' again will overwrite the previous application with this new one. If that's not what you want to do, click 'Save New' instead.");
          window.sessionStorage.setItem('rentapmode','newedit'); //although session storage mode has been changed to 'newedit', mode is still 'new' until the next time this function is called
       }
-
-      self.postMessage([row,rentap,mode]); //worker saves edit if mode is 'edit' or 'newedit' but not if 'new'
+      else {                       //saves edit if mode is 'edit' or 'newedit' but not if 'new'
+         csvarray = JSON.parse(window.sessionStorage.getItem('rentapcsvJSON'));
+         csvarray[row] = rentap;
+         window.sessionStorage.setItem("rentapcsvJSON",JSON.stringify(csvarray));
+         self.postMessage([row,rentap]);
+      }
    },
 false);
 document.getElementById("saveeditbutton").appendChild(butt); //put the button on the page
