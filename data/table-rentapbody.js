@@ -135,11 +135,11 @@ document.write('\
                   <div style="padding:8px" />\
                </li>\
                <li>\
-                  <input id="generateCsvButton" type="button" class="inlinebutton" onClick="javascript:setCSVInsertText();" value="Generate CSV"/>\
-                  <input id="importCsvButton" type="button" class="inlinebutton" onClick="javascript:importCSV();" value="Import CSV"/>\
+                  <input id="generateCsvButton" type="button" class="inlinewidebutton" onClick="javascript:setCSVInsertText();" value="Generate CSV"/>\
+                  <input id="importCsvButton" type="button" class="inlinewidebutton" onClick="javascript:importCSV();" value="Import CSV"/>\
                   <textarea id="csv" cols="24" rows="6"></textarea>\
                   <div id="copyCSVdataButton" class="inline"></div>\
-                  <input id="clearCSVbutton" type="button" class="inlinebutton" onClick="javascript:clearCSV();" value="Clear CSV"/>\
+                  <input id="clearCSVbutton" type="button" class="inlinewidebutton" onClick="javascript:clearCSV();" value="Clear CSV"/>\
                </li>\
                <li>\
                   <div style="padding:14px" />\

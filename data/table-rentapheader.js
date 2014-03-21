@@ -35,3 +35,9 @@ document.write('\
          </tr>\
       </table>\
 ');
+
+var sel = document.createElement("select");
+var opt0 = document.createElement("option");
+opt0.text = "Choose Header";
+sel.add(opt0, null);
+document.getElementById("listheadermenu").appendChild(sel); //put the dropdown menu list on the page

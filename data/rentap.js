@@ -7,7 +7,7 @@
 //   rentapCSV         (information entered into the CSV box)
 //
 
-function rentapGet() {
+function rentapDisplayed() {
     var rentap = [
         document.getElementById('fullname').value,  //0
         document.getElementById('ssnumber').value,   //1
@@ -35,7 +35,7 @@ function rentapGet() {
    return rentap
 }
 
-function rentapPut(rentap) {
+function displayRentap(rentap) {
    var row = window.sessionStorage.getItem("rentaprow");
    var rentapCSV = window.sessionStorage.getItem("rentapCSV"); //this will only have something if the Generate CSV button was clicked
    
@@ -76,6 +76,7 @@ function setRheader() {
    document.getElementById('rentalcitystzip').value = rheader[i][1];
    document.getElementById('rtitle').value = rheader[i][2];
    document.getElementById('headername').value = rheader[i][3];
+   populateSelectHeader();
 }
 
 function restoreState() {
@@ -86,7 +87,7 @@ function restoreState() {
    else {
       var rentaps = JSON.parse(window.sessionStorage.getItem("rentaps"));
       var row = window.sessionStorage.getItem("rentaprow")
-      rentapPut(rentaps[row]);
+      displayRentap(rentaps[row]);
    }
 }
 
@@ -102,17 +103,17 @@ function SQLquote(data) { //this comes from amo-editors@mozilla.org in email fro
 }
 
 function setCSVInsertText() {
-   var rentap = rentapGet();
+   var rentap = rentapDisplayed();
    document.getElementById('csv').value = CSV.arrayToCsv(rentap);
 }
 
 function importCSV() {
    var rentap = CSV.csvToArray(document.getElementById('csv').value);
-   rentapPut(rentap[0]);
+   displayRentap(rentap[0]);
 }
 
 function setSqlInsertText() {
-   var rentap = rentapGet();
+   var rentap = rentapDisplayed();
    var SQLquotedRentap = []
    for(var i=0; i<22; i++) SQLquotedRentap[i] = SQLquote(rentap[i]);
 
@@ -129,7 +130,7 @@ function prevButton() {
    var row = window.sessionStorage.getItem("rentaprow")
    if (row>0) row--; else row=rentaps.length-1;
    window.sessionStorage.setItem('rentaprow',row);
-   rentapPut(rentaps[row]);
+   displayRentap(rentaps[row]);
 } 
 
 function jumpButton(){
@@ -137,7 +138,7 @@ function jumpButton(){
    var jumptorow = document.getElementById("rownumber").value;
    if (jumptorow<=rentaps.length-1 && jumptorow>=0) {       
       window.sessionStorage.setItem('rentaprow',jumptorow);
-      rentapPut(rentaps[jumptorow]);
+      displayRentap(rentaps[jumptorow]);
    }        
 } 
 
@@ -146,6 +147,25 @@ function nextButton() {
    var row = window.sessionStorage.getItem("rentaprow")
    if (row<rentaps.length-1) row++; else row=0;
    window.sessionStorage.setItem('rentaprow',row);
-   rentapPut(rentaps[row]);
+   displayRentap(rentaps[row]);
 } 
 
+function populateSelectHeader() {
+   var sel = document.getElementById("listheadermenu").firstChild;
+   var RHEADER = JSON.parse(window.sessionStorage.getItem("rentapRHEADERJSON"));
+   while (sel.length < RHEADER.length) {
+      var opti = document.createElement("option");
+      var i = sel.length;
+      var rheader = RHEADER[i]
+      opti.text = rheader[3];
+      if (opti.text === "") opti.text = i;
+      sel.add(opti, null);
+   };
+   
+   sel.onchange = 
+      function(){
+         var i = sel.selectedIndex;
+         window.sessionStorage.setItem("rentapRHEADERi",i);
+         setRheader() 
+      }
+}
