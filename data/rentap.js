@@ -1,7 +1,7 @@
 //window.sessionStorage variables:
 //   rentapRHEADERJSON (array of rentap headers)
 //   rentapRHEADERi    (index of last header used)
-//   rentapcsvJSON     (array of rentap applications as csv)
+//   rentaps           (array of rentap applications as arrays)
 //   rentaprow         (index of last application displayed)
 //   rentapmode        (new, edit, newedit)
 //   rentapCSV         (information entered into the CSV box)
@@ -9,7 +9,7 @@
 
 function rentapGet() {
     var rentap = [
-        [document.getElementById('fullname').value,  //0
+        document.getElementById('fullname').value,  //0
         document.getElementById('ssnumber').value,   //1
         document.getElementById('birthdate').value,  //2
         document.getElementById('maritalstatus').value, //3
@@ -30,7 +30,7 @@ function rentapGet() {
         document.getElementById('rentdate').value,  //18
         document.getElementById('rentaladdress').value, //19
         document.getElementById('rentalcitystzip').value,  //20
-        document.getElementById('rtitle').value]     //21
+        document.getElementById('rtitle').value     //21
      ]
    return rentap
 }
@@ -70,10 +70,8 @@ function rentapPut(rentap) {
 }
 
 function setRheader() {
-   window.alert("rentapRHEADERJSON: " + window.sessionStorage.getItem("rentapRHEADERJSON"));
    var rheader=JSON.parse(window.sessionStorage.getItem("rentapRHEADERJSON"));
    var i=window.sessionStorage.getItem("rentapRHEADERi");
-   window.alert("rheader, i: " + rheader + ", " + i);
    document.getElementById('rentaladdress').value = rheader[i][0];
    document.getElementById('rentalcitystzip').value = rheader[i][1];
    document.getElementById('rtitle').value = rheader[i][2];
@@ -86,11 +84,9 @@ function restoreState() {
       setRheader();
    }
    else {
-      window.alert("rentapcsvJSON: " + window.sessionStorage.getItem("rentapcsvJSON"));
-      var csv = JSON.parse(window.sessionStorage.getItem("rentapcsvJSON"));
+      var rentaps = JSON.parse(window.sessionStorage.getItem("rentaps"));
       var row = window.sessionStorage.getItem("rentaprow")
-      var rentap = CSV.csvToArray(csv[row]);
-      rentapPut(rentap[0]);
+      rentapPut(rentaps[row]);
    }
 }
 
@@ -129,30 +125,27 @@ function clearCSV() {
 }
 
 function prevButton() {   
-   var csv = JSON.parse(window.sessionStorage.getItem("rentapcsvJSON"));
+   var rentaps = JSON.parse(window.sessionStorage.getItem("rentaps"));
    var row = window.sessionStorage.getItem("rentaprow")
-   if (row>0) row--; else row=csv.length-1;
+   if (row>0) row--; else row=rentaps.length-1;
    window.sessionStorage.setItem('rentaprow',row);
-   var rentap = CSV.csvToArray(csv[row]);
-   rentapPut(rentap[0]);
+   rentapPut(rentaps[row]);
 } 
 
 function jumpButton(){
-   var csv = JSON.parse(window.sessionStorage.getItem("rentapcsvJSON"));
+   var rentaps = JSON.parse(window.sessionStorage.getItem("rentaps"));
    var jumptorow = document.getElementById("rownumber").value;
-   var rentap = CSV.csvToArray(csv[jumptorow]);
    if (jumptorow<=csv.length-1 && jumptorow>=0) {       
       window.sessionStorage.setItem('rentaprow',jumptorow);
-      rentapPut(rentap[0]);
+      rentapPut(rentaps[jumptorow]);
    }        
 } 
 
 function nextButton() {   
-   var csv = JSON.parse(window.sessionStorage.getItem("rentapcsvJSON"));
+   var rentaps = JSON.parse(window.sessionStorage.getItem("rentaps"));
    var row = window.sessionStorage.getItem("rentaprow")
    if (row<csv.length-1) row++; else row=0;
    window.sessionStorage.setItem('rentaprow',row);
-   var rentap = CSV.csvToArray(csv[row]);
-   rentapPut(rentap[0]);
+   rentapPut(rentaps[row]);
 } 
 
