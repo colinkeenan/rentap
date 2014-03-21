@@ -89,6 +89,7 @@ function restoreState() {
       var row = window.sessionStorage.getItem("rentaprow")
       displayRentap(rentaps[row]);
    }
+   populateChooseName();
 }
 
 function SQLquote(data) { //this comes from amo-editors@mozilla.org in email from Reviewer: Kris Maglione
@@ -167,5 +168,38 @@ function populateSelectHeader() {
          var i = sel.selectedIndex;
          window.sessionStorage.setItem("rentapRHEADERi",i);
          setRheader() 
+      }
+}
+
+function populateChooseName() {
+   var rentaps = JSON.parse(window.sessionStorage.getItem('rentaps'));
+   var JSONfound = window.sessionStorage.getItem('rentapJSONfound'); //stringified form array of arrays
+   if(JSONfound != null) var found = JSON.parse(JSONfound); //back to actual array of arrays
+      else var found = [[]]
+   var searchSel = document.getElementById("listsearchmenu").firstChild;   
+   if(found === null) {
+      while (searchSel.length < rentaps.length) {
+         var namei = document.createElement("option");
+         var i = searchSel.length;
+         namei.text = rentaps[i][0];
+         namei.value = i;
+         searchSel.add(namei, null);
+      }
+   } else {
+      while (searchSel.length < found.length) {
+         var namei = document.createElement("option");
+         var i = searchSel.length;
+         namei.text = found[i][1][0];
+         namei.value = found[i][0];
+         searchSel.add(namei, null);
+      }
+   };
+
+   searchSel.onchange = 
+      function(){
+         var i = searchSel.selectedIndex;
+         var j = searchSel.options[i].value;
+         window.sessionStorage.setItem('rentaprow',j);
+         displayRentap(rentaps[j]);
       }
 }

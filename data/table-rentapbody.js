@@ -154,3 +154,9 @@ document.write('\
       </tr>\
       </table>\
 ');
+
+var searchSel = document.createElement("select");
+var chooseName = document.createElement("option");
+chooseName.text = "Choose Name";
+searchSel.add(chooseName, null);
+document.getElementById("listsearchmenu").appendChild(searchSel); //put the dropdown menu list on the page
