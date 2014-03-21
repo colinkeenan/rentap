@@ -135,7 +135,7 @@ function prevButton() {
 function jumpButton(){
    var rentaps = JSON.parse(window.sessionStorage.getItem("rentaps"));
    var jumptorow = document.getElementById("rownumber").value;
-   if (jumptorow<=csv.length-1 && jumptorow>=0) {       
+   if (jumptorow<=rentaps.length-1 && jumptorow>=0) {       
       window.sessionStorage.setItem('rentaprow',jumptorow);
       rentapPut(rentaps[jumptorow]);
    }        
@@ -144,7 +144,7 @@ function jumpButton(){
 function nextButton() {   
    var rentaps = JSON.parse(window.sessionStorage.getItem("rentaps"));
    var row = window.sessionStorage.getItem("rentaprow")
-   if (row<csv.length-1) row++; else row=0;
+   if (row<rentaps.length-1) row++; else row=0;
    window.sessionStorage.setItem('rentaprow',row);
    rentapPut(rentaps[row]);
 } 
