@@ -70,12 +70,12 @@ function displayRentap(rentap) {
 }
 
 function setRheader() {
-   var rheader=JSON.parse(window.sessionStorage.getItem("rentapRHEADERJSON"));
+   var RHEADER=JSON.parse(window.sessionStorage.getItem("rentapRHEADERJSON"));
    var i=window.sessionStorage.getItem("rentapRHEADERi");
-   document.getElementById('rentaladdress').value = rheader[i][0];
-   document.getElementById('rentalcitystzip').value = rheader[i][1];
-   document.getElementById('rtitle').value = rheader[i][2];
-   document.getElementById('headername').value = rheader[i][3];
+   document.getElementById('rentaladdress').value = RHEADER[i][0];
+   document.getElementById('rentalcitystzip').value = RHEADER[i][1];
+   document.getElementById('rtitle').value = RHEADER[i][2];
+   document.getElementById('headername').value = RHEADER[i][3];
    populateSelectHeader();
 }
 
