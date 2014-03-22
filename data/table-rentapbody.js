@@ -121,7 +121,7 @@ document.write('\
                   <input id="jumpbutton" type="button" class="inlinebutton" onClick="javascript:jumpButton();" value="Jump"/>\
                   <input id="nextbutton" type="button" class="inlinebutton" onClick="javascript:nextButton();" value="Next"/>\
                   <input type="text" id="findname" title="Hint: Use &quot; to search names only. For example, &quot;d, for names starting with D." value="" />\
-                  <div id="searchbutton" class="inline" title="Click while empty to clear previous search and list all names."></div>\
+                  <input id="searchbutton" type="button" class="inlinebutton" onClick="javascript:searchButton();" value="Search" title="Click while empty to clear previous search and list all names."/>\
                   <div id="listsearchmenu" class="inline"></div>\
                </li>\
                <li>\

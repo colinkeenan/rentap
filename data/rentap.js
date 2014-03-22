@@ -87,7 +87,7 @@ function restoreState() {
    else {
       var rentaps = JSON.parse(window.sessionStorage.getItem("rentaps"));
       var row = window.sessionStorage.getItem("rentaprow")
-      displayRentap(rentaps[row]);
+      if(typeof(rentaps[row]) != 'undefined') displayRentap(rentaps[row]);
    }
    populateChooseName();
 }
@@ -105,12 +105,12 @@ function SQLquote(data) { //this comes from amo-editors@mozilla.org in email fro
 
 function setCSVInsertText() {
    var rentap = rentapDisplayed();
-   document.getElementById('csv').value = CSV.arrayToCsv(rentap);
+   document.getElementById('csv').value = CSV.arrayToCsv([rentap]);
 }
 
 function importCSV() {
    var rentap = CSV.csvToArray(document.getElementById('csv').value);
-   displayRentap(rentap[0]);
+   if(typeof(rentaps[row]) != 'undefined') displayRentap(rentaps[row]);
 }
 
 function setSqlInsertText() {
@@ -131,7 +131,7 @@ function prevButton() {
    var row = window.sessionStorage.getItem("rentaprow")
    if (row>0) row--; else row=rentaps.length-1;
    window.sessionStorage.setItem('rentaprow',row);
-   displayRentap(rentaps[row]);
+   if(typeof(rentaps[row]) != 'undefined') displayRentap(rentaps[row]);
 } 
 
 function jumpButton(){
@@ -139,7 +139,7 @@ function jumpButton(){
    var jumptorow = document.getElementById("rownumber").value;
    if (jumptorow<=rentaps.length-1 && jumptorow>=0) {       
       window.sessionStorage.setItem('rentaprow',jumptorow);
-      displayRentap(rentaps[jumptorow]);
+      if(typeof(rentaps[jumptorow]) != 'undefined') displayRentap(rentaps[jumptorow]);
    }        
 } 
 
@@ -148,8 +148,34 @@ function nextButton() {
    var row = window.sessionStorage.getItem("rentaprow")
    if (row<rentaps.length-1) row++; else row=0;
    window.sessionStorage.setItem('rentaprow',row);
-   displayRentap(rentaps[row]);
+   if(typeof(rentaps[row]) != 'undefined') displayRentap(rentaps[row]);
 } 
+
+function searchButton() {
+   var rentaps = JSON.parse(window.sessionStorage.getItem('rentaps'));
+   var findname = document.getElementById('findname').value;
+   if (findname === "") {
+      window.sessionStorage.setItem('rentapJSONfound',null);
+      populateChooseName();
+   } else {
+      if (RegExp("\^\"").test(findname)) var regexp = RegExp("\^"+findname + "\|\^" + findname.slice(1), "i");
+      else var regexp = RegExp(findname, "ig");
+      var i = 1; //don't search on row 0 which is the instructions page
+      var found = [[[]]];
+      while (i < rentaps.length) {   
+         regexp.lastIndex = 0;  //if don't reset lastIndex, it will test this string starting from the position the pattern was found in the previous string
+         if (regexp.test(rentaps[i])) found.push([i,rentaps[i]]); 
+         i++;
+      }   
+      if(typeof(found[1]) != 'undefined') {
+         var RENTAP = found[1];  //save 1st found to be displayed right away
+         window.sessionStorage.setItem('rentaprow',RENTAP[0]); //RENTAP[0] is the row, RENTAP[1] is the data to be displayed
+         if(typeof(RENTAP[1]) != 'undefined') displayRentap(RENTAP[1]);
+         window.sessionStorage.setItem('rentapJSONfound',JSON.stringify(found)); //save so Choose Name can display found names
+         populateChooseName();
+      }
+   }
+}
 
 function populateSelectHeader() {
    var sel = document.getElementById("listheadermenu").firstChild;
@@ -175,8 +201,10 @@ function populateChooseName() {
    var rentaps = JSON.parse(window.sessionStorage.getItem('rentaps'));
    var JSONfound = window.sessionStorage.getItem('rentapJSONfound'); //stringified form array of arrays
    if(JSONfound != null) var found = JSON.parse(JSONfound); //back to actual array of arrays
-      else var found = [[]]
+      else var found = [[[]]];
    var searchSel = document.getElementById("listsearchmenu").firstChild;   
+   for(var i = searchSel.options.length-1; i>=1; i--)
+     searchSel.remove(i);
    if(found === null) {
       while (searchSel.length < rentaps.length) {
          var namei = document.createElement("option");
@@ -189,7 +217,7 @@ function populateChooseName() {
       while (searchSel.length < found.length) {
          var namei = document.createElement("option");
          var i = searchSel.length;
-         namei.text = found[i][1][0];
+         namei.text = (found[i][1])[0];
          namei.value = found[i][0];
          searchSel.add(namei, null);
       }
@@ -200,6 +228,6 @@ function populateChooseName() {
          var i = searchSel.selectedIndex;
          var j = searchSel.options[i].value;
          window.sessionStorage.setItem('rentaprow',j);
-         displayRentap(rentaps[j]);
+         if(typeof(rentaps[j]) != 'undefined') displayRentap(rentaps[j]);
       }
 }
