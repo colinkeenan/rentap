@@ -1,19 +1,25 @@
-#rentapheader {width: 958px; margin:0px}
-#tdrtitle,#rtitle {font:26px sans-serif; font-weight: bold; text-align:center; border-width:0px; vertical-align:top; max-width:400px; width:400px; margin:0px; padding:0px;display: inline-block; height: 40px}
-#rentaladdress, #rentalcitystzip {font:12px serif; font-weight: bold; border-width:0px; vertical-align:top; max-width: 180px; width: 180px; max-height: 18px; margin:0px; padding:0px; display: block}
-#authdate {width:6em; display:block; position: relative; top: -8px;}
-#guestdate, #rentdate {display:block; position: relative; top: -8px;}
-#rowprint {width:3em; border-width:0px; position: relative; top: -10px;}
-#rentapbody {margin:0px;}
-ul {margin-left:0px; padding-left:5px;}
 #controls, #headercontrols {display:none}
+#rentapheader {width: 890px; margin:0px}
+#tdrtitle,#rtitle {font:26px sans-serif; font-weight: bold; text-align:center; border-width:0px; vertical-align:top; max-width:390px; width:390px; margin:0px; padding:0px;display: inline-block}
+#rentaladdress, #rentalcitystzip {font:12px serif; font-weight: bold; border-width:0px; vertical-align:top; max-width: 176px; width: 176px; max-height: 18px; margin:0px; padding:0px; display: block}
+#authdate {width:84px; display:block; position: relative; top: -8px;}
+#guestdate, #rentdate {width:84px; display:block; position: relative; top: -8px;}
+#rowprint {width:42px; border-width:0px;position: relative; top: -8px;}
+#rentapbody {margin:0px;}
+ul {margin-left:0px; padding-left:0px;}
 li {list-style: none;}
-textarea {font:15px serif; border-style:solid}
-.personalinfo {margin-left: 5px; max-width: 71px; vertical-align:middle}
-#fullname {margin-top: 2px}
-input {font:14px serif; width: 15em; margin-bottom: 3px; height: 19px; border-style:solid}
-td {vertical-align:top; max-width:330px; }
-label, .section_header {font: 14px serif; display: inline-block; min-width: 71px; max-width: 288px; vertical-align:bottom; white-space: nowrap; overflow: hidden}
-.smalllabelinput {font:12px sans-serif; position: relative; top: -6px; display:block; width:6em;}
-#currentaddresslabel {margin-top:4px}
-
+.personalinfo {margin-left: 5px; width: 73px; vertical-align:middle}
+input {font:14px serif; width:200px}
+textarea {font:14px serif; width:290px}
+td {vertical-align:top; max-width:316px}
+label, .section_header {font: 14px serif; display: inline-block; min-width: 82px; max-width: 288px; vertical-align:bottom; white-space: nowrap; overflow: hidden}
+.inline {display: inline-block;}
+.smalllabelinput {font:12px sans-serif; position: relative; top: -6px; display:block; width:72px;}
+#currentaddresslabel {margin-top:16px}
+#currentaddress {height:80px}
+#previousaddresses {height:156px}
+#occupants {height:50px}
+#pets {height:40px}
+#income {height:84px}
+#employment {height:279px}
+#evictions, #felonies {height:130px}
