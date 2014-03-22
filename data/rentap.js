@@ -1,11 +1,11 @@
-//window.sessionStorage variables:
+// window.sessionStorage variables:
 //   rentapRHEADERJSON (array of rentap headers)
 //   rentapRHEADERi    (index of last header used)
 //   rentaps           (array of rentap applications as arrays)
 //   rentaprow         (index of last application displayed)
 //   rentapmode        (new, edit, newedit)
 //   rentapCSV         (information entered into the CSV box)
-//
+//   rentapJSONfound   (array of rentap applications that were found from searchbutton)
 
 function rentapDisplayed() {
     var rentap = [
@@ -177,9 +177,20 @@ function searchButton() {
    }
 }
 
+function processKey(e) {
+    if (null == e)
+        e = window.event;
+    if (e.keyCode == 13)  {
+        document.getElementById("searchbutton").click();
+        return false;
+    }
+}
+
 function populateSelectHeader() {
    var sel = document.getElementById("listheadermenu").firstChild;
    var RHEADER = JSON.parse(window.sessionStorage.getItem("rentapRHEADERJSON"));
+   for(var i = sel.options.length-1; i>=1; i--)
+     sel.remove(i);
    while (sel.length < RHEADER.length) {
       var opti = document.createElement("option");
       var i = sel.length;
