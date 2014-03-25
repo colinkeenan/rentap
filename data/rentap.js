@@ -66,12 +66,14 @@ function displayRentap(rentap) {
    document.getElementById('rowprint').value=row;
    document.getElementById('headername').value="";
 
-   window.sessionStorage.setItem('rentapmode','edit');
+   if(window.sessionStorage.getItem('rentapmode')==='new') //only set to edit if it was new because want to leave newedit alone
+      window.sessionStorage.setItem('rentapmode','edit');  //and no need to change it if it was already edit
 }
 
 function setRheader() {
    var RHEADER=JSON.parse(window.sessionStorage.getItem("rentapRHEADERJSON"));
    var i=window.sessionStorage.getItem("rentapRHEADERi");
+   if(i===null) i=0;
    document.getElementById('rentaladdress').value = RHEADER[i][0];
    document.getElementById('rentalcitystzip').value = RHEADER[i][1];
    document.getElementById('rtitle').value = RHEADER[i][2];
@@ -110,7 +112,7 @@ function setCSVInsertText() {
 
 function importCSV() {
    var rentap = CSV.csvToArray(document.getElementById('csv').value);
-   if(typeof(rentaps[row]) != 'undefined') displayRentap(rentaps[row]);
+   if(typeof(rentap) != 'undefined') displayRentap(rentap[0]);
 }
 
 function setSqlInsertText() {
