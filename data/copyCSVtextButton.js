@@ -4,7 +4,9 @@ butt.appendChild(btext);                           //attach text to the button
 
 butt.addEventListener("click",                     //handle onclick event
    function(){   
-      self.postMessage(document.getElementById('csv').value);
+      var CSV = document.getElementById('csv').value
+      window.sessionStorage.setItem("rentapCSV",CSV);
+      self.postMessage(CSV);
    },
 false);
 

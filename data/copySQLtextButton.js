@@ -4,9 +4,9 @@ butt.appendChild(btext);                           //attach text to the button
 
 butt.addEventListener("click",                     //handle onclick event
    function(){
-      var sqlinsert = document.getElementById('sqlinsert').value
-      window.sessionStorage.setItem("rentapsqlinsert",sqlinsert);
-      self.postMessage(sqlinsert);
+      var SQL = document.getElementById('SQL').value
+      window.sessionStorage.setItem("rentapSQL",SQL);
+      self.postMessage(SQL);
    },
 false);
 

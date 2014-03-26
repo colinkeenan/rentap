@@ -1,11 +1,13 @@
 // window.sessionStorage variables:
 //   rentapRHEADERJSON (array of rentap headers)
-//   rentapRHEADERi    (index of last header used)
-//   rentaps           (array of rentap applications as arrays)
-//   rentaprow         (index of last application displayed)
+//   rentapRHEADERi    (index of currently displayed rentap header)
+//   rentapsJSON       (array of rentap applications as arrays)
+//   rentapsFoundJSON  (array of rentap applications that were found from searchbutton)
+//   rentapUnsavedJSON (currently displayed data that hasn't been saved -- needed when mode becomes newedit)
+//   rentaprow         (index of rentap currently displayed)
 //   rentapmode        (new, edit, newedit)
-//   rentapCSV         (information entered into the CSV box)
-//   rentapJSONfound   (array of rentap applications that were found from searchbutton)
+//   rentapCSV         (text entered into the CSV box)
+//   rentapSQL         (text entered into the SQL box)
 
 function rentapDisplayed() {
     var rentap = [
@@ -37,10 +39,12 @@ function rentapDisplayed() {
 
 function displayRentap(rentap) {
    var row = window.sessionStorage.getItem("rentaprow");
-   var rentapCSV = window.sessionStorage.getItem("rentapCSV"); //this will only have something if the Generate CSV button was clicked
-   
+   var csv = window.sessionStorage.getItem("rentapCSV"); //text entered into the CSV box
+   var SQL = window.sessionStorage.getItem("rentapSQL"); //text entered into the SQL box
+
    document.getElementById('rownumber').value = row;
-   document.getElementById('csv').value = rentapCSV;
+   document.getElementById('csv').value = csv;
+   document.getElementById('SQL').value = SQL;
    document.getElementById('fullname').value = rentap[0];
    document.getElementById('ssnumber').value = rentap[1];
    document.getElementById('birthdate').value = rentap[2];
@@ -66,32 +70,41 @@ function displayRentap(rentap) {
    document.getElementById('rowprint').value=row;
    document.getElementById('headername').value="";
 
-   if(window.sessionStorage.getItem('rentapmode')==='new') //only set to edit if it was new because want to leave newedit alone
-      window.sessionStorage.setItem('rentapmode','edit');  //and no need to change it if it was already edit
+   if(window.sessionStorage.getItem('rentapmode') === 'new')
+      window.sessionStorage.setItem('rentapmode','edit');
 }
 
 function setRheader() {
    var RHEADER=JSON.parse(window.sessionStorage.getItem("rentapRHEADERJSON"));
    var i=window.sessionStorage.getItem("rentapRHEADERi");
-   if(i===null) i=0;
+   if(typeof(RHEADER[i])=== 'undefined') {
+      i=0;
+      window.sessionStorage.setItem("rentapRHEADERi",i);
+   }
    document.getElementById('rentaladdress').value = RHEADER[i][0];
    document.getElementById('rentalcitystzip').value = RHEADER[i][1];
    document.getElementById('rtitle').value = RHEADER[i][2];
    document.getElementById('headername').value = RHEADER[i][3];
-   populateSelectHeader();
 }
 
 function restoreState() {
    var mode = window.sessionStorage.getItem("rentapmode"); 
    if(mode === 'new') {
       setRheader();
-   }
-   else {
-      var rentaps = JSON.parse(window.sessionStorage.getItem("rentaps"));
+   } else if(mode === 'edit') {
+      var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
       var row = window.sessionStorage.getItem("rentaprow")
-      if(typeof(rentaps[row]) != 'undefined') displayRentap(rentaps[row]);
+      if(typeof(rentaps[row]) != 'undefined') {
+         displayRentap(rentaps[row]);
+      } else {
+         row=0;
+         window.sessionStorage.setItem("rentaprow",row);
+      }
+   } else {
+      displayRentap(JSON.parse(window.sessionStorage.getItem('rentapUnsavedJSON')));
    }
    populateChooseName();
+   populateSelectHeader();
 }
 
 function SQLquote(data) { //this comes from amo-editors@mozilla.org in email from Reviewer: Kris Maglione
@@ -120,7 +133,7 @@ function setSqlInsertText() {
    var SQLquotedRentap = []
    for(var i=0; i<22; i++) SQLquotedRentap[i] = SQLquote(rentap[i]);
 
-   document.getElementById('sqlinsert').value = "INSERT OR REPLACE INTO rentap VALUES(" + SQLquotedRentap + ")";
+   document.getElementById('SQL').value = "INSERT OR REPLACE INTO rentap VALUES(" + SQLquotedRentap + ")";
 }
 
 function clearCSV() {
@@ -129,7 +142,7 @@ function clearCSV() {
 }
 
 function prevButton() {   
-   var rentaps = JSON.parse(window.sessionStorage.getItem("rentaps"));
+   var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
    var row = window.sessionStorage.getItem("rentaprow")
    if (row>0) row--; else row=rentaps.length-1;
    window.sessionStorage.setItem('rentaprow',row);
@@ -137,7 +150,7 @@ function prevButton() {
 } 
 
 function jumpButton(){
-   var rentaps = JSON.parse(window.sessionStorage.getItem("rentaps"));
+   var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
    var jumptorow = document.getElementById("rownumber").value;
    if (jumptorow<=rentaps.length-1 && jumptorow>=0) {       
       window.sessionStorage.setItem('rentaprow',jumptorow);
@@ -146,7 +159,7 @@ function jumpButton(){
 } 
 
 function nextButton() {   
-   var rentaps = JSON.parse(window.sessionStorage.getItem("rentaps"));
+   var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
    var row = window.sessionStorage.getItem("rentaprow")
    if (row<rentaps.length-1) row++; else row=0;
    window.sessionStorage.setItem('rentaprow',row);
@@ -154,10 +167,10 @@ function nextButton() {
 } 
 
 function searchButton() {
-   var rentaps = JSON.parse(window.sessionStorage.getItem('rentaps'));
+   var rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
    var findname = document.getElementById('findname').value;
    if (findname === "") {
-      window.sessionStorage.setItem('rentapJSONfound',null);
+      window.sessionStorage.setItem('rentapsFoundJSON',null);
       populateChooseName();
    } else {
       if (RegExp("\^\"").test(findname)) var regexp = RegExp("\^"+findname + "\|\^" + findname.slice(1), "i");
@@ -173,26 +186,24 @@ function searchButton() {
          var RENTAP = found[1];  //save 1st found to be displayed right away
          window.sessionStorage.setItem('rentaprow',RENTAP[0]); //RENTAP[0] is the row, RENTAP[1] is the data to be displayed
          if(typeof(RENTAP[1]) != 'undefined') displayRentap(RENTAP[1]);
-         window.sessionStorage.setItem('rentapJSONfound',JSON.stringify(found)); //save so Choose Name can display found names
+         window.sessionStorage.setItem('rentapsFoundJSON',JSON.stringify(found)); //save so Choose Name can display found names
          populateChooseName();
       }
    }
 }
 
 function processKey(e) {
-    if (null == e)
+    if (e == null)
         e = window.event;
-    if (e.keyCode == 13)  {
+    if (e.keyCode == 13)  
         document.getElementById("searchbutton").click();
-        return false;
-    }
 }
 
 function populateSelectHeader() {
    var sel = document.getElementById("listheadermenu").firstChild;
    var RHEADER = JSON.parse(window.sessionStorage.getItem("rentapRHEADERJSON"));
    for(var i = sel.options.length-1; i>=1; i--)
-     sel.remove(i);
+      sel.remove(i);
    while (sel.length < RHEADER.length) {
       var opti = document.createElement("option");
       var i = sel.length;
@@ -211,27 +222,26 @@ function populateSelectHeader() {
 }
 
 function populateChooseName() {
-   var rentaps = JSON.parse(window.sessionStorage.getItem('rentaps'));
-   var JSONfound = window.sessionStorage.getItem('rentapJSONfound'); //stringified form array of arrays
-   if(JSONfound != null) var found = JSON.parse(JSONfound); //back to actual array of arrays
-      else var found = [[[]]];
+   var rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
    var searchSel = document.getElementById("listsearchmenu").firstChild;   
    for(var i = searchSel.options.length-1; i>=1; i--)
      searchSel.remove(i);
-   if(found === null) {
-      while (searchSel.length < rentaps.length) {
-         var namei = document.createElement("option");
-         var i = searchSel.length;
-         namei.text = rentaps[i][0];
-         namei.value = i;
-         searchSel.add(namei, null);
-      }
-   } else {
+   var rentapsFoundJSON = window.sessionStorage.getItem('rentapsFoundJSON');
+   var found = JSON.parse(rentapsFoundJSON);
+   if(rentapsFoundJSON != null && found != null) {
       while (searchSel.length < found.length) {
          var namei = document.createElement("option");
          var i = searchSel.length;
          namei.text = (found[i][1])[0];
          namei.value = found[i][0];
+         searchSel.add(namei, null);
+      }
+   } else {
+      while (searchSel.length < rentaps.length) {
+         var namei = document.createElement("option");
+         var i = searchSel.length;
+         namei.text = rentaps[i][0];
+         namei.value = i;
          searchSel.add(namei, null);
       }
    };

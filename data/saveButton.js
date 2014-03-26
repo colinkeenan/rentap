@@ -32,11 +32,12 @@ butt.addEventListener("click",
       if (mode==="edit") {
          window.alert("Warning: this application has already been saved in the past. Clicking 'Save New' again will save another copy leaving the original untouched. If that's not what you want to do, click 'Save Edit' instead.");
          window.sessionStorage.setItem('rentapmode','newedit'); //although session storage mode has been changed to 'newedit', mode is still 'edit' until the next time this function is called
+         window.sessionStorage.setItem('rentapUnsavedJSON',JSON.stringify(rentap));
       }
       else {
-         rentaps = JSON.parse(window.sessionStorage.getItem('rentaps'));
+         rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
          rentaps.push(rentap);
-         window.sessionStorage.setItem("rentaps",JSON.stringify(rentaps));
+         window.sessionStorage.setItem("rentapsJSON",JSON.stringify(rentaps));
          var row = rentaps.length-1;
          document.getElementById('rownumber').value = row;
          window.sessionStorage.setItem('rentaprow',row);

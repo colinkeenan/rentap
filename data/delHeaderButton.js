@@ -16,15 +16,6 @@ butt.addEventListener("click",
       document.getElementById('headername').value = RHEADER[i][3];
       window.sessionStorage.setItem("rentapRHEADERi",i);
       window.sessionStorage.setItem("rentapRHEADERJSON",JSON.stringify(RHEADER));
-      var sel = document.getElementById("listheadermenu").firstChild;
-      while (sel.length < RHEADER.length) {
-         var opti = document.createElement("option");
-         var i = sel.length;
-         var rheader = RHEADER[i]
-         opti.text = rheader[3];
-         if (opti.text === "") opti.text = i;
-         sel.add(opti, null);
-      }
       self.postMessage(RHEADERi);
    },
 false);
