@@ -3,9 +3,8 @@
 //   rentapRHEADERi    (index of currently displayed rentap header)
 //   rentapsJSON       (array of rentap applications as arrays)
 //   rentapsFoundJSON  (array of rentap applications that were found from searchbutton)
-//   rentapUnsavedJSON (currently displayed data that hasn't been saved -- needed when mode becomes newedit)
 //   rentaprow         (index of rentap currently displayed)
-//   rentapmode        (new, edit, newedit)
+//   rentapmode        (new, edit)
 //   rentapCSV         (text entered into the CSV box)
 //   rentapSQL         (text entered into the SQL box)
 
@@ -70,8 +69,7 @@ function displayRentap(rentap) {
    document.getElementById('rowprint').value=row;
    document.getElementById('headername').value="";
 
-   if(window.sessionStorage.getItem('rentapmode') === 'new')
-      window.sessionStorage.setItem('rentapmode','edit');
+   window.sessionStorage.setItem('rentapmode','edit');
 }
 
 function setRheader() {
@@ -100,9 +98,7 @@ function restoreState() {
          row=0;
          window.sessionStorage.setItem("rentaprow",row);
       }
-   } else {
-      displayRentap(JSON.parse(window.sessionStorage.getItem('rentapUnsavedJSON')));
-   }
+   } 
    populateChooseName();
    populateSelectHeader();
 }
@@ -195,7 +191,7 @@ function searchButton() {
 function processKey(e) {
     if (e == null)
         e = window.event;
-    if (e.keyCode == 13)  
+    if (e.keyCode == 13)  // pressing ENTER clicks the Search button
         document.getElementById("searchbutton").click();
 }
 

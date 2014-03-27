@@ -1,5 +1,5 @@
 var butt = document.createElement("button");             //define button element
-var btext = document.createTextNode("Save New");         //define the text
+var btext = document.createTextNode("Save");             //define the text
 butt.appendChild(btext);                                 //attach text to the button
 
 butt.addEventListener("click", 
@@ -29,20 +29,21 @@ butt.addEventListener("click",
          document.getElementById('rtitle').value     //21
       ]
       var mode = window.sessionStorage.getItem('rentapmode');
+      rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
       if (mode==="edit") {
-         window.alert("Warning: this application has already been saved in the past. Clicking 'Save New' again will save another copy leaving the original untouched. If that's not what you want to do, click 'Save Edit' instead.");
-         window.sessionStorage.setItem('rentapmode','newedit'); //although session storage mode has been changed to 'newedit', mode is still 'edit' until the next time this function is called
-         window.sessionStorage.setItem('rentapUnsavedJSON',JSON.stringify(rentap));
+         var row = window.sessionStorage.getItem('rentaprow');
+         rentaps[row] = rentap;
+         window.sessionStorage.setItem("rentapsJSON",JSON.stringify(rentaps));
+         self.postMessage(['edit',row,[rentap]]);
       }
       else {
-         rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
          rentaps.push(rentap);
          window.sessionStorage.setItem("rentapsJSON",JSON.stringify(rentaps));
          var row = rentaps.length-1;
          document.getElementById('rownumber').value = row;
          window.sessionStorage.setItem('rentaprow',row);
          window.sessionStorage.setItem('rentapmode','edit'); //having saved the application, further changes would be an edit
-         self.postMessage([rentap]); //save in simple storage 
+         self.postMessage(['new',row,[rentap]]); //save in simple storage 
       }
    },
 false);
