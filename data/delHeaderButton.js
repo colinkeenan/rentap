@@ -1,5 +1,5 @@
 var butt = document.createElement("button");             //define button element
-var btext = document.createTextNode("-");        //define the text
+var btext = document.createTextNode("-");                //define the text
 butt.appendChild(btext);                                 //attach text to the button
 
 butt.addEventListener("click", 
