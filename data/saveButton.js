@@ -2,6 +2,8 @@ var butt = document.createElement("button");             //define button element
 var btext = document.createTextNode("Save");             //define the text
 butt.appendChild(btext);                                 //attach text to the button
 
+var rentapmode = window.sessionStorage.getItem("rentapmode");
+
 butt.addEventListener("click", 
    function() {                                          //handle onclick event
       var rentap = [
@@ -47,5 +49,7 @@ butt.addEventListener("click",
       }
    },
 false);
-document.getElementById("savebutton").appendChild(butt); //put the button on the page
+
+if(rentapmode != "discarded")
+   document.getElementById("savebutton").appendChild(butt); //put the Save button on the page only if not viewing a discarded rentap
 
