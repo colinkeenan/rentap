@@ -1,12 +1,13 @@
 // window.sessionStorage variables:
-//   rentapRHEADERJSON (array of rentap headers)
-//   rentapRHEADERi    (index of currently displayed rentap header)
-//   rentapsJSON       (array of rentap applications as arrays)
-//   rentapsFoundJSON  (array of rentap applications that were found from searchbutton)
-//   rentaprow         (index of rentap currently displayed)
-//   rentapmode        (new, edit)
-//   rentapCSV         (text entered into the CSV box)
-//   rentapSQL         (text entered into the SQL box)
+//   rentapRHEADERJSON  (array of rentap headers)
+//   rentapRHEADERi     (index of currently displayed rentap header)
+//   rentapsJSON        (array of rentap applications as arrays)
+//   rentapdiscardsJSON (array of discarded rentap applications as arrays)
+//   rentapsFoundJSON   (array of rentap applications that were found from searchbutton)
+//   rentaprow          (index of rentap currently displayed)
+//   rentapmode         (new, edit)
+//   rentapCSV          (text entered into the CSV box)
+//   rentapSQL          (text entered into the SQL box)
 
 function rentapDisplayed() {
     var rentap = [
@@ -94,6 +95,15 @@ function restoreState() {
       var row = window.sessionStorage.getItem("rentaprow")
       if(typeof(rentaps[row]) != 'undefined') {
          displayRentap(rentaps[row]);
+      } else {
+         row=0;
+         window.sessionStorage.setItem("rentaprow",row);
+      }
+   } else if(mode === 'discarded') {
+      var discards = JSON.parse(window.sessionStorage.getItem("rentapdiscardsJSON"));
+      var row = window.sessionStorage.getItem("rentaprow")
+      if(typeof(rentaps[row]) != 'undefined') {
+         displayRentap(discards[row]);
       } else {
          row=0;
          window.sessionStorage.setItem("rentaprow",row);
