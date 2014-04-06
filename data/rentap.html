@@ -214,6 +214,8 @@
       </tr>
       </table>
       <script type="text/javascript">
+         trashButton(); // if not already viewing a discard, put trash button on page to view discards
+         backButton();  // if viewing a discard, put back button on page to get back to non-discarded rentaps
          var searchSel = document.createElement("select");
          var chooseName = document.createElement("option");
          chooseName.text = "Choose Name";
