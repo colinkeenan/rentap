@@ -35,7 +35,7 @@ function rentapDisplayed() {
         document.getElementById('rentalcitystzip').value,  //20
         document.getElementById('rtitle').value     //21
      ]
-   return rentap
+   return rentap;
 }
 
 function displayRentap(rentap) {
@@ -107,7 +107,7 @@ function restoreState() {
    } else if(mode === 'discarded') {
       var discards = JSON.parse(window.sessionStorage.getItem("rentapdiscardsJSON"));
       var row = window.sessionStorage.getItem("rentaprow")
-      if(typeof(rentaps[row]) != 'undefined') {
+      if(typeof(discards[row]) != 'undefined') {
          displayRentap(discards[row]);
       } else {
          row=0;
@@ -152,8 +152,16 @@ function clearCSV() {
    window.sessionStorage.setItem("rentapCSV","");
 }
 
+function getDatabase() {
+   var mode = window.sessionStorage.getItem("rentapmode");
+   if (mode != "discarded") 
+      return JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
+   else
+      return JSON.parse(window.sessionStorage.getItem("rentapdiscardsJSON"));
+}
+
 function prevButton() {   
-   var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
+   var rentaps = getDatabase();
    var row = window.sessionStorage.getItem("rentaprow")
    if (row>0) row--; else row=rentaps.length-1;
    window.sessionStorage.setItem('rentaprow',row);
@@ -161,7 +169,7 @@ function prevButton() {
 } 
 
 function jumpButton(){
-   var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
+   var rentaps = getDatabase();
    var jumptorow = document.getElementById("rownumber").value;
    if (jumptorow<=rentaps.length-1 && jumptorow>=0) {       
       window.sessionStorage.setItem('rentaprow',jumptorow);
@@ -170,7 +178,7 @@ function jumpButton(){
 } 
 
 function nextButton() {   
-   var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
+   var rentaps = getDatabase();
    var row = window.sessionStorage.getItem("rentaprow")
    if (row<rentaps.length-1) row++; else row=0;
    window.sessionStorage.setItem('rentaprow',row);
@@ -178,7 +186,7 @@ function nextButton() {
 } 
 
 function searchButton() {
-   var rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
+   var rentaps = getDatabase();
    var findname = document.getElementById('findname').value;
    if (findname === "") {
       window.sessionStorage.setItem('rentapsFoundJSON',null);
@@ -233,7 +241,7 @@ function populateSelectHeader() {
 }
 
 function populateChooseName() {
-   var rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
+   var rentaps = getDatabase();
    var searchSel = document.getElementById("listsearchmenu").firstChild;   
    for(var i = searchSel.options.length-1; i>=1; i--)
      searchSel.remove(i);
