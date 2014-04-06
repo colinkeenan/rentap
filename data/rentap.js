@@ -81,6 +81,7 @@ function displayRentap(rentap) {
 function setRheader() {
    var RHEADER=JSON.parse(window.sessionStorage.getItem("rentapRHEADERJSON"));
    var i=window.sessionStorage.getItem("rentapRHEADERi");
+   var mode = window.sessionStorage.getItem("rentapmode"); //new | edit | discarded
    if(typeof(RHEADER[i])=== 'undefined') {
       i=0;
       window.sessionStorage.setItem("rentapRHEADERi",i);
@@ -89,6 +90,7 @@ function setRheader() {
    document.getElementById('rentalcitystzip').value = RHEADER[i][1];
    document.getElementById('rtitle').value = RHEADER[i][2];
    document.getElementById('headername').value = RHEADER[i][3];
+   document.getElementById('mode').value=mode;
 }
 
 function restoreState() {
@@ -158,6 +160,21 @@ function getDatabase() {
       return JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
    else
       return JSON.parse(window.sessionStorage.getItem("rentapdiscardsJSON"));
+}
+
+function editedVerifyReally() {
+   var rentap = displayedRentap();
+   var rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
+   var row = window.sessionStorage.getItem('rentaprow');
+   var edited = false;
+   for (var i=0; i<16; i++) {   // 16 and above is just header and date
+      if (rentaps[row][i] != rentap[i]) // if what's stored is different than what's diplayed then edits have not been saved
+         edited = true;
+   }
+   var really = true;
+   if (edited)
+      var really = window.confirm("Do you really want to leave this page without saving changes?");
+   return really;
 }
 
 function prevButton() {   
@@ -279,21 +296,22 @@ function trashButton() {
    var btext = document.createTextNode("Trash");            //define the text
    butt.appendChild(btext);                                 //attach text to the button
    
-   var rentapmode = window.sessionStorage.getItem('rentapmode');
-   var discards = JSON.parse(window.sessionStorage.getItem('rentapdiscardsJSON'));
+   var mode = window.sessionStorage.getItem('rentapmode');
    
    butt.addEventListener("click", 
       function() {                                          //handle onclick event
-         if(typeof(discards[0]) != 'undefined') {
-            window.sessionStorage.setItem("rentaptemprow",window.sessionStorage.getItem("rentaprow"))
+         var really = editedVerifyReally();
+         if (really) {
+            window.sessionStorage.setItem("rentaptemprow",row)
             window.sessionStorage.setItem("rentaprow",0);
             window.sessionStorage.setItem("rentapmode","discarded");
+            var discards = JSON.parse(window.sessionStorage.getItem('rentapdiscardsJSON'));
             displayRentap(discards[0]);
          }
       },
    false);
    
-   if(rentapmode != "discarded")
+   if(mode != "discarded")
       document.getElementById("trashbutton").appendChild(butt); //put the Trash button on the page only if not already viewing a discarded rentap
 }
 
