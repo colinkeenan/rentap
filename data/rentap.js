@@ -169,6 +169,8 @@ function getDatabase() {
 
 function editedVerifyReally() {
    var mode = window.sessionStorage.getItem("rentapmode");
+   if (mode === "discarded")
+      return true; //got here by using navigation in trash which can't be edited so no need for anything else
    var displayedRentap = rentapDisplayed();
    var rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
    var row = window.sessionStorage.getItem('rentaprow');
@@ -195,29 +197,38 @@ function editedVerifyReally() {
 }
 
 function prevButton() {   
-   var rentaps = getDatabase();
-   var row = window.sessionStorage.getItem("rentaprow")
-   if (row>0) row--; else row=rentaps.length-1;
-   window.sessionStorage.setItem('rentaprow',row);
-   if(typeof(rentaps[row]) != 'undefined') displayRentap(rentaps[row]);
+   var really= editedVerifyReally();
+   if (really) {
+      var rentaps = getDatabase();
+      var row = window.sessionStorage.getItem("rentaprow")
+      if (row>0) row--; else row=rentaps.length-1;
+      window.sessionStorage.setItem('rentaprow',row);
+      if(typeof(rentaps[row]) != 'undefined') displayRentap(rentaps[row]);
+   }
 } 
 
 function jumpButton(){
-   var rentaps = getDatabase();
-   var jumptorow = document.getElementById("rownumber").value;
-   if (jumptorow<=rentaps.length-1 && jumptorow>=0) {       
-      window.sessionStorage.setItem('rentaprow',jumptorow);
-      if(typeof(rentaps[jumptorow]) != 'undefined') displayRentap(rentaps[jumptorow]);
-   }        
+   var really= editedVerifyReally();
+   if (really) {
+      var rentaps = getDatabase();
+      var jumptorow = document.getElementById("rownumber").value;
+      if (jumptorow<=rentaps.length-1 && jumptorow>=0) {       
+         window.sessionStorage.setItem('rentaprow',jumptorow);
+         if(typeof(rentaps[jumptorow]) != 'undefined') displayRentap(rentaps[jumptorow]);
+      }        
+   }
 } 
 
 function nextButton() {   
-   var rentaps = getDatabase();
-   var row = window.sessionStorage.getItem("rentaprow")
-   if (row<rentaps.length-1) row++; else row=0;
-   window.sessionStorage.setItem('rentaprow',row);
-   if(typeof(rentaps[row]) != 'undefined') displayRentap(rentaps[row]);
-} 
+   var really= editedVerifyReally();
+   if (really) {
+      var rentaps = getDatabase();
+      var row = window.sessionStorage.getItem("rentaprow")
+      if (row<rentaps.length-1) row++; else row=0;
+      window.sessionStorage.setItem('rentaprow',row);
+      if(typeof(rentaps[row]) != 'undefined') displayRentap(rentaps[row]);
+   } 
+}
 
 function searchButton() {
    var rentaps = getDatabase();
@@ -237,8 +248,11 @@ function searchButton() {
       }   
       if(typeof(found[1]) != 'undefined') {
          var RENTAP = found[1];  //save 1st found to be displayed right away
-         window.sessionStorage.setItem('rentaprow',RENTAP[0]); //RENTAP[0] is the row, RENTAP[1] is the data to be displayed
-         if(typeof(RENTAP[1]) != 'undefined') displayRentap(RENTAP[1]);
+         var really= editedVerifyReally();
+         if (really) {
+            window.sessionStorage.setItem('rentaprow',RENTAP[0]); //RENTAP[0] is the row, RENTAP[1] is the data to be displayed
+            if(typeof(RENTAP[1]) != 'undefined') displayRentap(RENTAP[1]);
+         }
          window.sessionStorage.setItem('rentapsFoundJSON',JSON.stringify(found)); //save so Choose Name can display found names
          populateChooseName();
       }
@@ -301,10 +315,15 @@ function populateChooseName() {
 
    searchSel.onchange = 
       function(){
-         var i = searchSel.selectedIndex;
-         var j = searchSel.options[i].value;
-         window.sessionStorage.setItem('rentaprow',j);
-         if(typeof(rentaps[j]) != 'undefined') displayRentap(rentaps[j]);
+         var really= editedVerifyReally();
+         if (really) {
+            var i = searchSel.selectedIndex;
+            if(i != 0) {
+               var j = searchSel.options[i].value;
+               window.sessionStorage.setItem('rentaprow',j);
+               displayRentap(rentaps[j]);
+            }
+         }
       }
 }
 
