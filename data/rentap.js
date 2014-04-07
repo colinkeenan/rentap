@@ -304,9 +304,9 @@ function populateChooseName() {
          searchSel.add(namei, null);
       }
    } else {
-      while (searchSel.length < rentaps.length) {
+      while (searchSel.length <= rentaps.length) {
          var namei = document.createElement("option");
-         var i = searchSel.length;
+         var i = searchSel.length-1;
          namei.text = rentaps[i][0];
          namei.value = i;
          searchSel.add(namei, null);
