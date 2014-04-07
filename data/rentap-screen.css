@@ -16,6 +16,7 @@ td {vertical-align:top; max-width:330px}
 label, .section_header {font: 14px serif; display: inline-block; min-width: 78px; max-width: 288px; vertical-align:bottom; white-space: nowrap; overflow: hidden}
 .button {max-width: 131px}
 .inline {display: inline-block;}
+.inlineshort {display: inline-block; max-width:80px}
 .inlinebutton {display: inline-block; max-width:60px}
 .inlinewidebutton {display: inline-block; max-width:120px}
 #findname {width: 250px}

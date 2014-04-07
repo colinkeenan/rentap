@@ -1,4 +1,4 @@
-#controls, #headercontrols {display:none}
+.inlineshort, #controls, #headercontrols {display:none}
 #rentapheader {width: 890px; margin:0px}
 #tdrtitle,#rtitle {font:26px sans-serif; font-weight: bold; text-align:center; border-width:0px; vertical-align:top; max-width:390px; width:390px; margin:0px; padding:0px;display: inline-block}
 #rentaladdress, #rentalcitystzip {font:12px serif; font-weight: bold; border-width:0px; vertical-align:top; max-width: 176px; width: 176px; max-height: 18px; margin:0px; padding:0px; display: block}

@@ -1,14 +1,15 @@
 // window.sessionStorage variables:
-//   rentapRHEADERJSON  (array of rentap headers)
-//   rentapRHEADERi     (index of currently displayed rentap header)
-//   rentapsJSON        (array of rentap applications as arrays)
-//   rentapdiscardsJSON (array of discarded rentap applications as arrays)
-//   rentapsFoundJSON   (array of rentap applications that were found from searchbutton)
-//   rentaprow          (index of rentap currently displayed)
-//   retnaptemprow      (index of rentap displayed before showing discards by pressing Trash button)
-//   rentapmode         (new, edit)
-//   rentapCSV          (text entered into the CSV box)
-//   rentapSQL          (text entered into the SQL box)
+//   rentapRHEADERJSON   (array of rentap headers)
+//   rentapRHEADERi      (index of currently displayed rentap header)
+//   rentapsJSON         (array of rentap applications as arrays)
+//   rentapDisplayedJSON (currently displayed information as array)
+//   rentapdiscardsJSON  (array of discarded rentap applications as arrays)
+//   rentapsFoundJSON    (array of rentap applications that were found from searchbutton)
+//   rentaprow           (index of rentap currently displayed)
+//   retnaptemprow       (index of rentap displayed before showing discards by pressing Trash button)
+//   rentapmode          (new, edit)
+//   rentapCSV           (text entered into the CSV box)
+//   rentapSQL           (text entered into the SQL box)
 
 function rentapDisplayed() {
     var rentap = [
@@ -115,7 +116,11 @@ function restoreState() {
          row=0;
          window.sessionStorage.setItem("rentaprow",row);
       }
-   } 
+   } else if(mode === 'edited') {
+         window.sessionStorage.setItem("rentapmode","edit");
+         var displayedRentap = JSON.parse(window.sessionStorage.getItem('rentapDisplayedJSON'));
+         displayRentap(displayedRentap);
+   }
    populateChooseName();
    populateSelectHeader();
 }
@@ -163,17 +168,29 @@ function getDatabase() {
 }
 
 function editedVerifyReally() {
-   var rentap = displayedRentap();
+   var mode = window.sessionStorage.getItem("rentapmode");
+   var displayedRentap = rentapDisplayed();
    var rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
    var row = window.sessionStorage.getItem('rentaprow');
    var edited = false;
-   for (var i=0; i<16; i++) {   // 16 and above is just header and date
-      if (rentaps[row][i] != rentap[i]) // if what's stored is different than what's diplayed then edits have not been saved
-         edited = true;
+   if (mode === "new") {
+      for (var i=0; i<16; i++) {   // 16 and above is just header and date
+         if (displayedRentap[i] != "") 
+            edited = true;
+      }
+   } else {
+      for (var i=0; i<rentaps[row].length; i++) {
+         if (displayedRentap[i] != rentaps[row][i]) 
+            edited = true;
+      }
    }
    var really = true;
-   if (edited)
+   if (edited) {
+      window.sessionStorage.setItem("rentapDisplayedJSON",JSON.stringify(displayedRentap));
       var really = window.confirm("Do you really want to leave this page without saving changes?");
+      if (!really)
+         window.sessionStorage.setItem("rentapmode","edited");
+   }
    return really;
 }
 
@@ -300,14 +317,14 @@ function trashButton() {
    
    butt.addEventListener("click", 
       function() {                                          //handle onclick event
-         var really = editedVerifyReally();
+         var really= editedVerifyReally();
          if (really) {
-            window.sessionStorage.setItem("rentaptemprow",row)
+            window.sessionStorage.setItem("rentaptemprow",window.sessionStorage.getItem('rentaprow'))
             window.sessionStorage.setItem("rentaprow",0);
             window.sessionStorage.setItem("rentapmode","discarded");
             var discards = JSON.parse(window.sessionStorage.getItem('rentapdiscardsJSON'));
             displayRentap(discards[0]);
-         }
+         } 
       },
    false);
    
