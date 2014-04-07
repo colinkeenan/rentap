@@ -6,7 +6,7 @@
 //   rentapdiscardsJSON  (array of discarded rentap applications as arrays)
 //   rentapsFoundJSON    (array of rentap applications that were found from searchbutton)
 //   rentaprow           (index of rentap currently displayed)
-//   retnaptemprow       (index of rentap displayed before showing discards by pressing Trash button)
+//   rentaptemprow       (index of rentap displayed before showing discards by pressing Trash button)
 //   rentapmode          (new, edit)
 //   rentapCSV           (text entered into the CSV box)
 //   rentapSQL           (text entered into the SQL box)
@@ -314,6 +314,7 @@ function trashButton() {
    butt.appendChild(btext);                                 //attach text to the button
    
    var mode = window.sessionStorage.getItem('rentapmode');
+   var discards = JSON.parse(window.sessionStorage.getItem('rentapdiscardsJSON'));
    
    butt.addEventListener("click", 
       function() {                                          //handle onclick event
@@ -322,14 +323,13 @@ function trashButton() {
             window.sessionStorage.setItem("rentaptemprow",window.sessionStorage.getItem('rentaprow'))
             window.sessionStorage.setItem("rentaprow",0);
             window.sessionStorage.setItem("rentapmode","discarded");
-            var discards = JSON.parse(window.sessionStorage.getItem('rentapdiscardsJSON'));
             displayRentap(discards[0]);
          } 
       },
    false);
    
-   if(mode != "discarded")
-      document.getElementById("trashbutton").appendChild(butt); //put the Trash button on the page only if not already viewing a discarded rentap
+   if(mode != "discarded" && typeof(discards[0][0]) != 'undefined') 
+      document.getElementById("trashbutton").appendChild(butt); //put the Trash button on the page only if there's trash and not already in the trash
 }
 
 function backButton() {
