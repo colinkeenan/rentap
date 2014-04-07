@@ -356,7 +356,7 @@ function trashButton() {
       },
    false);
    
-   if(mode != "discarded" && typeof(discards[0][0]) != 'undefined') 
+   if(mode != "discarded" && (discards.length > 1 || discards[0][0] != null)) 
       document.getElementById("trashbutton").appendChild(butt); //put the Trash button on the page only if there's trash and not already in the trash
 }
 
