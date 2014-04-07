@@ -123,6 +123,11 @@ function restoreState() {
    }
    populateChooseName();
    populateSelectHeader();
+   var a = document.getElementById("new"); //make sure to check for unsaved changes when New is clicked
+   a.onclick = function() {
+      var really = editedVerifyReally(); //if editedVerifyReally() is true, then go to new application, otherwise don't
+      return really;
+   }
 }
 
 function SQLquote(data) { //this comes from amo-editors@mozilla.org in email from Reviewer: Kris Maglione
