@@ -95,38 +95,41 @@ function setRheader() {
 }
 
 function restoreState() {
-   var mode = window.sessionStorage.getItem("rentapmode"); 
-   if(mode === 'new') {
-      setRheader();
-   } else if(mode === 'edit') {
-      var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
-      var row = window.sessionStorage.getItem("rentaprow")
-      if(typeof(rentaps[row]) != 'undefined') {
-         displayRentap(rentaps[row]);
-      } else {
-         row=0;
-         window.sessionStorage.setItem("rentaprow",row);
+   window.onload = function() {
+      var mode = window.sessionStorage.getItem("rentapmode"); 
+      if(mode === 'new') {
+         setRheader();
+      } else if(mode === 'edit') {
+         var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
+         var row = window.sessionStorage.getItem("rentaprow")
+         if(typeof(rentaps[row]) != 'undefined') {
+            displayRentap(rentaps[row]);
+         } else {
+            row=0;
+            window.sessionStorage.setItem("rentaprow",row);
+         }
+      } else if(mode === 'discarded') {
+         var discards = JSON.parse(window.sessionStorage.getItem("rentapdiscardsJSON"));
+         var row = window.sessionStorage.getItem("rentaprow")
+         if(typeof(discards[row]) != 'undefined') {
+            displayRentap(discards[row]);
+         } else {
+            row=0;
+            window.sessionStorage.setItem("rentaprow",row);
+         }
+      } else if(mode === 'edited') {
+            window.sessionStorage.setItem("rentapmode","edit");
+            var displayedRentap = JSON.parse(window.sessionStorage.getItem('rentapDisplayedJSON'));
+            displayRentap(displayedRentap);
       }
-   } else if(mode === 'discarded') {
-      var discards = JSON.parse(window.sessionStorage.getItem("rentapdiscardsJSON"));
-      var row = window.sessionStorage.getItem("rentaprow")
-      if(typeof(discards[row]) != 'undefined') {
-         displayRentap(discards[row]);
-      } else {
-         row=0;
-         window.sessionStorage.setItem("rentaprow",row);
+      populateChooseName();
+      populateSelectHeader();
+      var a = document.getElementById("new"); //make sure to check for unsaved changes when New is clicked
+      a.onclick = function() {
+         var really = editedVerifyReally(); //if editedVerifyReally() is true, then go to new application, otherwise don't
+         if (!really) location.reload();
+         return really;
       }
-   } else if(mode === 'edited') {
-         window.sessionStorage.setItem("rentapmode","edit");
-         var displayedRentap = JSON.parse(window.sessionStorage.getItem('rentapDisplayedJSON'));
-         displayRentap(displayedRentap);
-   }
-   populateChooseName();
-   populateSelectHeader();
-   var a = document.getElementById("new"); //make sure to check for unsaved changes when New is clicked
-   a.onclick = function() {
-      var really = editedVerifyReally(); //if editedVerifyReally() is true, then go to new application, otherwise don't
-      return really;
    }
 }
 
