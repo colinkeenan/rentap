@@ -75,6 +75,7 @@ function displayRentap(rentap) {
    if (mode === "new") {
       mode = "edit";
       window.sessionStorage.setItem('rentapmode','edit');
+      location.reload(); //have to reload to tell addon buttons rentapmode changed
    }
    document.getElementById('mode').value=mode;
 }
