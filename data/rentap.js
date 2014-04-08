@@ -77,6 +77,8 @@ function displayRentap(rentap) {
       window.sessionStorage.setItem('rentapmode','edit');
       location.reload(); //have to reload to tell addon buttons rentapmode changed
    }
+   if (row === 0) 
+      location.reload(); //don't want delete or discard to show on row 0 so have to reload to tell those buttons row changed
    document.getElementById('mode').value=mode;
 }
 
@@ -313,9 +315,9 @@ function populateChooseName() {
          searchSel.add(namei, null);
       }
    } else {
-      while (searchSel.length <= rentaps.length) {
+      while (searchSel.length < rentaps.length) {
          var namei = document.createElement("option");
-         var i = searchSel.length-1;
+         var i = searchSel.length;
          namei.text = rentaps[i][0];
          namei.value = i;
          searchSel.add(namei, null);
