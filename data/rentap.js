@@ -414,3 +414,18 @@ function backButton() {
    if(rentapmode === "discarded")
       document.getElementById("backbutton").appendChild(butt); //put the Back button on the page only if viewing a discarded rentap
 }
+
+var bordersVisible = true;
+function toggleBorders() {
+   var printcss=document.styleSheets[0];
+   var screencss=document.styleSheets[1];
+   if (bordersVisible) {
+      printcss.insertRule("*{border-width:0px}",0);
+      screencss.insertRule("*{border-width:0px}",0);
+      bordersVisible = false;
+   } else {
+      printcss.deleteRule(0);
+      screencss.deleteRule(0);
+      bordersVisible = true;
+  }
+}
