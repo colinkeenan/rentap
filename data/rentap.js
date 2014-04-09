@@ -283,10 +283,12 @@ function searchButton() {
 }
 
 function processKey(e) {
-    if (e == null)
-        e = window.event;
-    if (e.keyCode == 13)  // pressing ENTER clicks the Search button
-        document.getElementById("searchbutton").click();
+   if (e == null)
+      e = window.event;
+   if (e.keyCode == 13) { // pressing ENTER clicks the search button 
+      // tried using document.activeElement to test if jump should be clicked instead, but doesn't know which input is active
+      document.getElementById("searchbutton").click();
+   }
 }
 
 function populateSelectHeader() {
