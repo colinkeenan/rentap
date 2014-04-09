@@ -8,4 +8,7 @@ self.on("message", function(RHEADERrentaps) {
    window.sessionStorage.setItem("rentapsJSON", JSON.stringify(RHEADERrentaps[1]));
    window.sessionStorage.setItem("rentapdiscardsJSON", JSON.stringify(RHEADERrentaps[2]));
    window.sessionStorage.setItem("rentapmode","new"); // either just started rentap or clicked "new" link
+   var prevrow = window.sessionStorage.getItem('rentapprevrow');
+   if (prevrow == null)
+      window.sessionStorage.setItem('rentapprevrow',0);
 });

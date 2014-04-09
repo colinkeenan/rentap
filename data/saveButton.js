@@ -41,7 +41,9 @@ butt.addEventListener("click",
       else {
          rentaps.push(rentap);
          window.sessionStorage.setItem("rentapsJSON",JSON.stringify(rentaps));
-         var row = rentaps.length-1;
+         var row = window.sessionStorage.getItem('rentaprow');
+         window.sessionStorage.setItem("rentapprevrow",row);
+         row = rentaps.length-1;
          document.getElementById('rownumber').value = row;
          window.sessionStorage.setItem('rentaprow',row);
          window.sessionStorage.setItem('rentapmode','edit'); //having saved the application, further changes would be an edit
