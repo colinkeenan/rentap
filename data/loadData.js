@@ -2,6 +2,7 @@
 //   rentapRHEADERJSON (array of rentap headers)
 //   rentapsJSON       (array of rentap applications as arrays)
 //   rentapmode        (new, edit, newedit) 
+//   rentapprevrow     (index of application that was visible just before this one, or -1 if not known)
 
 self.on("message", function(RHEADERrentaps) {
    window.sessionStorage.setItem("rentapRHEADERJSON", JSON.stringify(RHEADERrentaps[0]));
@@ -10,5 +11,5 @@ self.on("message", function(RHEADERrentaps) {
    window.sessionStorage.setItem("rentapmode","new"); // either just started rentap or clicked "new" link
    var prevrow = window.sessionStorage.getItem('rentapprevrow');
    if (prevrow == null)
-      window.sessionStorage.setItem('rentapprevrow',0);
+      window.sessionStorage.setItem('rentapprevrow',-1);
 });

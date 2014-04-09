@@ -6,7 +6,7 @@
 //   rentapdiscardsJSON  (array of discarded rentap applications as arrays)
 //   rentapsFoundJSON    (array of rentap applications that were found from searchbutton)
 //   rentaprow           (index of rentap currently displayed)
-//   rentapprevrow       (index of rentap that was displayed just before the current one)
+//   rentapprevrow       (index of rentap that was displayed just before the current one, or -1 if not known)
 //   rentaptemprow       (index of rentap displayed before showing discards by pressing Trash button)
 //   rentapmode          (new, edit)
 //   rentapCSV           (text entered into the CSV box)
@@ -79,8 +79,8 @@ function displayRentap(rentap) {
       location.reload(); //have to reload to tell addon buttons rentapmode changed
    }
    var prevrow = window.sessionStorage.getItem('rentapprevrow');
-   if ((row === 0 || prevrow === 0) && row != prevrow) {
-      location.reload(); //don't want delete or discard to show on row 0 so have to reload to tell those buttons row changed
+   if (prevrow != -1 && (row == 0 || prevrow == 0) && (row != prevrow)) {
+      location.reload(); //reload when row changes to or from row 0 to tell addon buttons because some shouldn't show on row 0
    }
    document.getElementById('mode').value=mode;
 }
@@ -111,7 +111,7 @@ function restoreState() {
          if(typeof(rentaps[row]) != 'undefined') {
             displayRentap(rentaps[row]);
          } else {
-            window.sessionStorage.setItem("rentapprevrow",row);
+            window.sessionStorage.setItem("rentapprevrow",-1);
             row=0;
             window.sessionStorage.setItem("rentaprow",row);
          }
@@ -121,7 +121,7 @@ function restoreState() {
          if(typeof(discards[row]) != 'undefined') {
             displayRentap(discards[row]);
          } else {
-            window.sessionStorage.setItem("rentapprevrow",row);
+            window.sessionStorage.setItem("rentapprevrow",-1);
             row=0;
             window.sessionStorage.setItem("rentaprow",row);
          }
@@ -218,7 +218,7 @@ function prevButton() {
       var rentaps = getDatabase();
       var row = window.sessionStorage.getItem("rentaprow")
       window.sessionStorage.setItem("rentapprevrow",row);
-      if (row>0) row--; else row=rentaps.length-1;
+      if (row>1) row--; else row=rentaps.length-1;
       window.sessionStorage.setItem('rentaprow',row);
       if(typeof(rentaps[row]) != 'undefined') displayRentap(rentaps[row]);
    }
@@ -244,7 +244,7 @@ function nextButton() {
       var rentaps = getDatabase();
       var row = window.sessionStorage.getItem("rentaprow");
       window.sessionStorage.setItem("rentapprevrow",row);
-      if (row<rentaps.length-1) row++; else row=0;
+      if (row<rentaps.length-1) row++; else row=1;
       window.sessionStorage.setItem('rentaprow',row);
       if(typeof(rentaps[row]) != 'undefined') displayRentap(rentaps[row]);
    } 
@@ -365,10 +365,10 @@ function trashButton() {
          var really= editedVerifyReally();
          if (really) {
             window.sessionStorage.setItem("rentaptemprow",window.sessionStorage.getItem('rentaprow'))
-            window.sessionStorage.setItem("rentaprow",0);
-            window.sessionStorage.setItem("rentapprevrow",0);
+            window.sessionStorage.setItem("rentaprow",1);
+            window.sessionStorage.setItem("rentapprevrow",-1);
             window.sessionStorage.setItem("rentapmode","discarded");
-            displayRentap(discards[0]);
+            displayRentap(discards[1]);
          } 
       },
    false);
@@ -387,7 +387,7 @@ function backButton() {
    var row = window.sessionStorage.getItem('rentaptemprow');
    if (row == null)
       var row = rentaps.length-1;
-   window.sessionStorage.setItem('rentapprevrow',0); // this prevents a situation that could lead to infinite loop
+   window.sessionStorage.setItem('rentapprevrow',-1); 
    
    butt.addEventListener("click", 
       function() {                                          //handle onclick event
