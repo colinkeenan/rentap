@@ -46,7 +46,7 @@ function displayRentap(rentap) {
    var SQL = window.sessionStorage.getItem("rentapSQL"); //text entered into the SQL box
    var mode = window.sessionStorage.getItem("rentapmode"); //new | edit | discarded
 
-   document.getElementById('rownumber').value = row;
+   document.getElementById('rownumber').value = '';
    document.getElementById('csv').value = csv;
    document.getElementById('SQL').value = SQL;
    document.getElementById('fullname').value = rentap[0];
@@ -282,12 +282,20 @@ function searchButton() {
    }
 }
 
+var clickButton
+
+function setClickButton(button) {
+  clickButton=button; 
+}
+
 function processKey(e) {
    if (e == null)
       e = window.event;
-   if (e.keyCode == 13) { // pressing ENTER clicks the search button 
-      // tried using document.activeElement to test if jump should be clicked instead, but doesn't know which input is active
-      document.getElementById("searchbutton").click();
+   if (e.keyCode == 13) { // pressing ENTER clicks the clickButton set by setClickButton()
+      if (clickButton == 'search')
+         document.getElementById('searchbutton').click();
+      else if (clickButton == 'jump') 
+         document.getElementById('jumpbutton').click();
    }
 }
 

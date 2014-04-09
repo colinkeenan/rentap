@@ -177,10 +177,10 @@
                   <div id="prevbutton" class="inline"></div>
                   <input id="prevbutton" type="button" class="inlinebutton" onClick="javascript:prevButton();" value="Prev"/>
                   <label for="rownumber" style="max-width:30px; min-width: 2px;">row</label>
-                  <input type="text" id="rownumber" class="inline" style="max-width: 30px;" title="Jump to row 0 to find printable instructions for applicants." value=""/>
+                  <input type="text" id="rownumber" onfocus="javascript:setClickButton('jump')" onkeydown="return processKey(event)" class="inline" style="max-width: 30px;" title="Jump to row 0 to find printable instructions for applicants." value=""/>
                   <input id="jumpbutton" type="button" class="inlinebutton" onClick="javascript:jumpButton();" value="Jump"/>
                   <input id="nextbutton" type="button" class="inlinebutton" onClick="javascript:nextButton();" value="Next"/>
-                  <input type="text" id="findname" onkeydown="return processKey(event)" title="Hint: Use &quot; to search names only. For example, &quot;d, for names starting with D." value="" />
+                  <input type="text" id="findname" onfocus="javascript:setClickButton('search')" onkeydown="return processKey(event)" title="Hint: Use &quot; to search names only. For example, &quot;d, for names starting with D." value="" />
                   <input id="searchbutton" type="button" class="inlinebutton" onClick="javascript:searchButton();" value="Search" title="Click while empty to clear previous search and list all names."/>
                   <div id="listsearchmenu" class="inline"></div>
                </li>

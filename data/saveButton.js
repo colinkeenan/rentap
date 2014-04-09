@@ -44,7 +44,6 @@ butt.addEventListener("click",
          var row = window.sessionStorage.getItem('rentaprow');
          window.sessionStorage.setItem("rentapprevrow",row);
          row = rentaps.length-1;
-         document.getElementById('rownumber').value = row;
          window.sessionStorage.setItem('rentaprow',row);
          window.sessionStorage.setItem('rentapmode','edit'); //having saved the application, further changes would be an edit
          self.postMessage(['new',row,[rentap]]); //save in simple storage 
