@@ -369,6 +369,7 @@ function trashButton() {
             window.sessionStorage.setItem("rentapprevrow",-1);
             window.sessionStorage.setItem("rentapmode","discarded");
             displayRentap(discards[1]);
+            location.reload(); // make sure addon buttons know it's row 1
          } 
       },
    false);
@@ -396,6 +397,7 @@ function backButton() {
          window.sessionStorage.setItem("rentaprow",row);
          window.sessionStorage.setItem("rentapmode","edit");
          displayRentap(rentaps[row]);
+         location.reload(); // make sure addon buttons know what row we're on now
       },
    false);
    
