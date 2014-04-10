@@ -374,7 +374,6 @@ function trashButton() {
    
    var mode = window.sessionStorage.getItem('rentapmode');
    var discards = JSON.parse(window.sessionStorage.getItem('rentapdiscardsJSON'));
-   var screencss=document.styleSheets[1];
    
    butt.addEventListener("click", 
       function() {                                          //handle onclick event
@@ -405,7 +404,6 @@ function backButton() {
    if (row == null)
       var row = rentaps.length-1;
    window.sessionStorage.setItem('rentapprevrow',-1); 
-   var screencss=document.styleSheets[1];
    
    butt.addEventListener("click", 
       function() {                                          //handle onclick event
