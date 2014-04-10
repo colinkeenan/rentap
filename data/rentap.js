@@ -47,6 +47,7 @@ function displayRentap(rentap) {
    var mode = window.sessionStorage.getItem("rentapmode"); //new | edit | discarded
 
    document.getElementById('rownumber').value = '';
+   document.getElementById('row').value=row;
    document.getElementById('csv').value = csv;
    document.getElementById('SQL').value = SQL;
    document.getElementById('fullname').value = rentap[0];

@@ -6,7 +6,8 @@
 #rentaladdress, #rentalcitystzip {font:12px serif; font-weight: bold; border-width:0px; vertical-align:top; max-width: 180px; width: 180px; max-height: 18px; margin:0px; padding:0px; display: block}
 #authdate {width:84px; display:block; position: relative; top: -8px;}
 #guestdate, #rentdate {width:84px; display:block; position: relative; top: -8px;}
-#rowprint {width:42px; border-width:0px;position: relative; top: -8px;}
+#rowprint {width:42px; border-width:0px; position: relative; top: -8px;}
+#row {width:42px; border-width:0px;}
 #rentapbody {min-width: 1330px; margin:0px;}
 ul {margin-left:0px; padding-left:0px;}
 li {list-style: none;}
