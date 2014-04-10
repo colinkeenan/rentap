@@ -82,6 +82,11 @@ function displayRentap(rentap) {
    if (prevrow != -1 && (row == 0 || prevrow == 0) && (row != prevrow)) {
       location.reload(); //reload when row changes to or from row 0 to tell addon buttons because some shouldn't show on row 0
    }
+   if (mode === "discarded") {
+      var f = document.forms[0];
+      for(var i=0; i<f.length; i++)                 //don't allow editing discards. for some reason, don't have to worry
+        f.elements[i].readOnly = true;              // about turning readOnly off - it does automatically (on reload?)
+   }
    document.getElementById('mode').value=mode;
 }
 
@@ -369,6 +374,7 @@ function trashButton() {
    
    var mode = window.sessionStorage.getItem('rentapmode');
    var discards = JSON.parse(window.sessionStorage.getItem('rentapdiscardsJSON'));
+   var screencss=document.styleSheets[1];
    
    butt.addEventListener("click", 
       function() {                                          //handle onclick event
@@ -399,6 +405,7 @@ function backButton() {
    if (row == null)
       var row = rentaps.length-1;
    window.sessionStorage.setItem('rentapprevrow',-1); 
+   var screencss=document.styleSheets[1];
    
    butt.addEventListener("click", 
       function() {                                          //handle onclick event
