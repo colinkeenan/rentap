@@ -43,12 +43,18 @@ butt.addEventListener("click",
          var row = window.sessionStorage.getItem('rentaprow');
          window.sessionStorage.setItem("rentapprevrow",row);
          row = rentaps.length;
-         rentap[22] = row; //for now, setting ID to row, but need to check against a set of ID's to make it unique
+         var rentapIDset = JSON.parse(window.sessionStorage.getItem('rentapIDset'));
+         var rentapByID = JSON.pasre(window.sessionStorage.getItem('rentapByID'));
+         rentapIDset.push(true);
+         rentap[22] = rentapIDset.length-1;
+         rentapByID[rentap[22]] = [false,row]; //rentap[22] is the ID, false answers Is this a discard?, and row is row
          rentaps.push(rentap);
+         window.sessionStorage.setItem("rentapIDsetJSON",JSON.stringify(rentapIDset));
+         window.sessionStorage.setItem("rentapByIDJSON",JSON.stringify(rentapByID));
          window.sessionStorage.setItem("rentapsJSON",JSON.stringify(rentaps));
          window.sessionStorage.setItem('rentaprow',row);
          window.sessionStorage.setItem('rentapmode','edit'); //having saved the application, further changes would be an edit
-         self.postMessage(['new',row,[rentap]]); //save in simple storage 
+         self.postMessage(['new',row,rentap]); //save in simple storage 
       }
    },
 false);
