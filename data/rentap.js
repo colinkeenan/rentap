@@ -4,6 +4,8 @@
 //   rentapsJSON         (array of rentap applications as arrays)
 //   rentapDisplayedJSON (currently displayed information as array)
 //   rentapdiscardsJSON  (array of discarded rentap applications as arrays)
+//   rentapByIDJSON      (rentapByID[ID] = [isTrash,row] giving row of rentap with ID and wether in discards or rentaps)
+//   rentapIDsetJSON     (set of unique ID's used so far)
 //   rentapsFoundJSON    (array of rentap applications that were found from searchbutton)
 //   rentaprow           (index of rentap currently displayed)
 //   rentapprevrow       (index of rentap that was displayed just before the current one, or -1 if not known)
@@ -35,7 +37,8 @@ function rentapDisplayed() {
         document.getElementById('rentdate').value,  //18
         document.getElementById('rentaladdress').value, //19
         document.getElementById('rentalcitystzip').value,  //20
-        document.getElementById('rtitle').value     //21
+        document.getElementById('rtitle').value,     //21
+        document.getElementById('rentapID').value   //22
      ]
    return rentap;
 }
@@ -72,6 +75,7 @@ function displayRentap(rentap) {
    document.getElementById('rentaladdress').value = rentap[19];
    document.getElementById('rentalcitystzip').value = rentap[20];
    document.getElementById('rtitle').value = rentap[21];
+   document.getElementById('rentapID').value = rentap[22];
    document.getElementById('rowprint').value=row;
    document.getElementById('headername').value="";
    if (mode === "new") {

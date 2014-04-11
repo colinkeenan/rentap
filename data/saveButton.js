@@ -28,7 +28,8 @@ butt.addEventListener("click",
          document.getElementById('rentdate').value,  //18
          document.getElementById('rentaladdress').value, //19
          document.getElementById('rentalcitystzip').value,  //20
-         document.getElementById('rtitle').value     //21
+         document.getElementById('rtitle').value,    //21
+         document.getElementById('rentapID').value   //22
       ]
       var mode = window.sessionStorage.getItem('rentapmode');
       rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
@@ -39,11 +40,12 @@ butt.addEventListener("click",
          self.postMessage(['edit',row,[rentap]]);
       }
       else {
-         rentaps.push(rentap);
-         window.sessionStorage.setItem("rentapsJSON",JSON.stringify(rentaps));
          var row = window.sessionStorage.getItem('rentaprow');
          window.sessionStorage.setItem("rentapprevrow",row);
-         row = rentaps.length-1;
+         row = rentaps.length;
+         rentap[22] = row; //for now, setting ID to row, but need to check against a set of ID's to make it unique
+         rentaps.push(rentap);
+         window.sessionStorage.setItem("rentapsJSON",JSON.stringify(rentaps));
          window.sessionStorage.setItem('rentaprow',row);
          window.sessionStorage.setItem('rentapmode','edit'); //having saved the application, further changes would be an edit
          self.postMessage(['new',row,[rentap]]); //save in simple storage 
