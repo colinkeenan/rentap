@@ -43,8 +43,8 @@ butt.addEventListener("click",
          var row = window.sessionStorage.getItem('rentaprow');
          window.sessionStorage.setItem("rentapprevrow",row);
          row = rentaps.length;
-         var rentapIDset = JSON.parse(window.sessionStorage.getItem('rentapIDset'));
-         var rentapByID = JSON.pasre(window.sessionStorage.getItem('rentapByID'));
+         var rentapIDset = JSON.parse(window.sessionStorage.getItem('rentapIDsetJSON'));
+         var rentapByID = JSON.parse(window.sessionStorage.getItem('rentapByIDJSON'));
          rentapIDset.push(true);
          rentap[22] = rentapIDset.length-1;
          rentapByID[rentap[22]] = [false,row]; //rentap[22] is the ID, false answers Is this a discard?, and row is row
