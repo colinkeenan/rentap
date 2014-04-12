@@ -7,19 +7,22 @@
 #authdate {width:84px; display:block; position: relative; top: -8px;}
 #guestdate, #rentdate {width:84px; display:block; position: relative; top: -8px;}
 #rowprint, #rentapID {width:42px; border-width:0px; position: relative; top: -8px;}
-#row {width:42px; border-width:0px;}
+#row, #id {width:26px; border-width:0px; position: relative; left: -4px;}
 #rentapbody {min-width: 1330px; margin:0px;}
 ul {margin-left:0px; padding-left:0px;}
 li {list-style: none;}
 .personalinfo {margin-left: 5px; width: 73px; vertical-align:middle}
 input {font:14px serif; width:220px}
+#rownumber, #idnumber {text-align:center;}
 textarea {font:14px serif; width:306px}
 td {vertical-align:top; max-width:330px}
 label, .section_header {font: 14px serif; display: inline-block; min-width: 78px; max-width: 288px; vertical-align:bottom; white-space: nowrap; overflow: hidden}
 .button {max-width: 131px}
 .inline {display: inline-block;}
 .inlineshort {display: inline-block; max-width:80px}
-.inlinebutton {display: inline-block; max-width:60px}
+.inlinebutton {display: inline-block; max-width:60px;}
+#jumpbutton, #idnumber, #rownumber {max-width:40px; position: relative; left: -4px}
+#prevbutton {position: relative; left: -4px}
 .inlinewidebutton {display: inline-block; max-width:120px}
 #findname {width: 250px}
 .smalllabelinput {font:12px sans-serif; position: relative; top: -6px; display:block; width:72px;}

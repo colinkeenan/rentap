@@ -175,15 +175,19 @@
                </li>
                <li>
                   <div style="padding:14px" />
-                  <label for="rownumber" style="min-width:100px; text-align:right; position:relative; top:+18px;">row</label>
+                  <label for="rownumber" style="min-width:150px; text-align:right; position:relative; top:+18px;">row</label>
+                  <label for="idnumber" style="min-width:68px; text-align:right; position:relative; top:+18px;">ID</label>
+                  </div>
                </li>
                <li>
                   <div id="prevbutton" class="inline"></div>
                   <input id="prevbutton" type="button" class="inlinebutton" onClick="javascript:prevButton();" value="Prev"/>
-                  <input type="text" id="row" class="inline" style="text-align: right;" value="" />
-                  <input type="text" id="rownumber" onfocus="javascript:setClickButton('jump')" onkeydown="return processKey(event)" class="inline" style="max-width: 30px;" title="Jump to row 0 to find printable instructions for applicants." value=""/>
-                  <input id="jumpbutton" type="button" class="inlinebutton" onClick="javascript:jumpButton();" value="Jump"/>
                   <input id="nextbutton" type="button" class="inlinebutton" onClick="javascript:nextButton();" value="Next"/>
+                  <input type="text" id="row" class="inline" style="text-align: right;" value="" />
+                  <input type="text" id="rownumber" onfocus="javascript:setClickButton('row')" onkeydown="return processKey(event)" class="inline" title="Jump to 0 to find printable instructions for applicants." value=""/>
+                  <input type="text" id="id" class="inline" style="text-align: right;" value="" />
+                  <input type="text" id="idnumber" onfocus="javascript:setClickButton('id')" onkeydown="return processKey(event)" class="inline" title="Jump to 0 to find printable instructions for applicants." value=""/>
+                  <input id="jumpbutton" type="button" class="inlinebutton" onClick="javascript:jumpButton();" value="Go"/>
                   <input type="text" id="findname" onfocus="javascript:setClickButton('search')" onkeydown="return processKey(event)" title="Hint: Use &quot; to search names only. For example, &quot;d, for names starting with D." value="" />
                   <input id="searchbutton" type="button" class="inlinebutton" onClick="javascript:searchButton();" value="Search" title="Click while empty to clear previous search and list all names."/>
                   <div id="listsearchmenu" class="inline"></div>

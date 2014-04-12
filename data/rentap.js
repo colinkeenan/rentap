@@ -50,6 +50,8 @@ function displayRentap(rentap) {
 
    document.getElementById('rownumber').value = '';
    document.getElementById('row').value=row;
+   document.getElementById('idnumber').value = '';
+   document.getElementById('id').value=rentap[22];
    document.getElementById('csv').value = csv;
    document.getElementById('SQL').value = SQL;
    document.getElementById('fullname').value = rentap[0];
@@ -88,8 +90,8 @@ function displayRentap(rentap) {
    }
    if (mode === "discarded") {
       var f = document.forms[0];
-      for(var i=0; i<f.length; i++)                 //don't allow editing discards. for some reason, don't have to worry
-         if(f.elements[i].id != 'findname')         // about turning readOnly off - it does automatically (on reload?)
+      for(var i=0; i<f.length; i++)                 //don't allow editing discards.
+         if(f.elements[i].id != 'findname' && f.elements[i].id != 'rownumber' && f.elements[i].id != 'idnumber')
             f.elements[i].readOnly = true;
    }
    document.getElementById('mode').value=mode;
@@ -237,14 +239,55 @@ function prevButton() {
 function jumpButton(){
    var really= editedVerifyReally();
    if (really) {
-      var rentaps = getDatabase();
+      var db = getDatabase();
+      var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
+      var discards = JSON.parse(window.sessionStorage.getItem("rentapdiscardsJSON"));
       var row = window.sessionStorage.getItem("rentaprow");
       window.sessionStorage.setItem("rentapprevrow",row);
-      var jumptorow = document.getElementById("rownumber").value;
-      if (jumptorow<=rentaps.length-1 && jumptorow>=0) {       
-         window.sessionStorage.setItem('rentaprow',jumptorow);
-         if(typeof(rentaps[jumptorow]) != 'undefined') displayRentap(rentaps[jumptorow]);
-      }        
+      var jumpto = row;
+      var mode = window.sessionStorage.getItem("rentapmode");
+      var inTrash = false;
+      var dbChanged = false;
+      if (mode === "discarded") inTrash = true;
+      if (clickButton == 'row') {
+         var newrow = Number(document.getElementById("rownumber").value);
+         if (newrow in db) {
+            jumpto = newrow;
+         } else {
+            window.alert("No application available at row: " + newrow.toString());
+         }
+      } else if (clickButton == 'id') {
+         var rentapByID = JSON.parse(window.sessionStorage.getItem('rentapByIDJSON'));
+         var id = Number(document.getElementById("idnumber").value);
+         if (id in rentapByID) {
+            var inTrashNew = rentapByID[id][0];
+            if (inTrashNew != inTrash) {
+               dbChanged = true;
+               inTrash = inTrashNew;
+            }
+            jumpto = Number(rentapByID[id][1]);
+         } else {
+            window.alert("No application available with ID: " + id.toString());
+         }
+      }
+      if (inTrash) {
+         window.sessionStorage.setItem('rentapmode','discarded');
+         db = discards;
+      } else {
+         window.sessionStorage.setItem('rentapmode','edit');
+         db = rentaps;
+      }
+      if (jumpto in db) {       
+         if(typeof(db[jumpto]) != 'undefined') {
+            window.sessionStorage.setItem('rentaprow',jumpto);
+            displayRentap(db[jumpto]);
+            if(dbChanged) location.reload();
+         } else {
+            window.alert("The application found is undefined.");
+         }
+      } else {
+         window.alert("Error finding application."); 
+      }
    }
 } 
 
@@ -304,7 +347,7 @@ function processKey(e) {
    if (e.keyCode == 13) { // pressing ENTER clicks the clickButton set by setClickButton()
       if (clickButton == 'search')
          document.getElementById('searchbutton').click();
-      else if (clickButton == 'jump') 
+      else if (clickButton == 'row' || clickButton == 'id') 
          document.getElementById('jumpbutton').click();
    }
 }
