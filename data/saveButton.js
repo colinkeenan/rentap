@@ -37,19 +37,16 @@ butt.addEventListener("click",
          var row = window.sessionStorage.getItem('rentaprow');
          rentaps[row] = rentap;
          window.sessionStorage.setItem("rentapsJSON",JSON.stringify(rentaps));
-         self.postMessage(['edit',row,[rentap]]);
+         self.postMessage(['edit',row,rentap]);
       }
       else {
          var row = window.sessionStorage.getItem('rentaprow');
          window.sessionStorage.setItem("rentapprevrow",row);
          row = rentaps.length;
-         var rentapIDset = JSON.parse(window.sessionStorage.getItem('rentapIDsetJSON'));
          var rentapByID = JSON.parse(window.sessionStorage.getItem('rentapByIDJSON'));
-         rentapIDset.push(true);
-         rentap[22] = rentapIDset.length-1;
-         rentapByID[rentap[22]] = [false,row]; //rentap[22] is the ID, false answers Is this a discard?, and row is row
+         rentapByID.push([false,row]); //false that it's discarded. it's going to be at index row of rentaps
+         rentap[22] = rentapByID.length-1; //rentap[22] stores ID, the index into rentapByID giving location information
          rentaps.push(rentap);
-         window.sessionStorage.setItem("rentapIDsetJSON",JSON.stringify(rentapIDset));
          window.sessionStorage.setItem("rentapByIDJSON",JSON.stringify(rentapByID));
          window.sessionStorage.setItem("rentapsJSON",JSON.stringify(rentaps));
          window.sessionStorage.setItem('rentaprow',row);

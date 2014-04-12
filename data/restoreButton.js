@@ -28,7 +28,7 @@ butt.addEventListener("click",
       window.sessionStorage.setItem("rentapdiscardsJSON",JSON.stringify(discards));
       window.sessionStorage.setItem("rentapmode","edit");
       document.getElementById('mode').value="edit";
-      self.postMessage([row,rentapID]);
+      self.postMessage([row,rentapID,newrow]);
    },
 false);
 

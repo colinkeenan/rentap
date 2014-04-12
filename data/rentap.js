@@ -5,7 +5,6 @@
 //   rentapDisplayedJSON (currently displayed information as array)
 //   rentapdiscardsJSON  (array of discarded rentap applications as arrays)
 //   rentapByIDJSON      (rentapByID[ID] = [isTrash,row] giving row of rentap with ID and wether in discards or rentaps)
-//   rentapIDsetJSON     (set of unique ID's used so far)
 //   rentapsFoundJSON    (array of rentap applications that were found from searchbutton)
 //   rentaprow           (index of rentap currently displayed)
 //   rentapprevrow       (index of rentap that was displayed just before the current one, or -1 if not known)
