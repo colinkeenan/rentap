@@ -22,13 +22,16 @@ butt.addEventListener("click",
       rentaps.splice(newrow,0,discards[row]); 
       discards.splice(row,1);
       rentapByID[rentapID] = [false,newrow]; // false that it's discarded. it's now on newrow of rentaps
+      //also need to update all the rows of rentaps after the inserted one at newrow
+      for (var nrow=rentaps.length-1; nrow>=newrow; nrow--) 
+         rentapByID[rentaps[nrow][22]] = [false,nrow];
       window.sessionStorage.setItem("rentaprow",newrow);
       window.sessionStorage.setItem("rentapsJSON",JSON.stringify(rentaps));
       window.sessionStorage.setItem("rentapByIDJSON",JSON.stringify(rentapByID));
       window.sessionStorage.setItem("rentapdiscardsJSON",JSON.stringify(discards));
       window.sessionStorage.setItem("rentapmode","edit");
       document.getElementById('mode').value="edit";
-      self.postMessage([row,rentapID,newrow]);
+      self.postMessage([row,newrow,rentapByID]);
    },
 false);
 
