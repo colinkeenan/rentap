@@ -247,7 +247,6 @@ function jumpButton(){
       var jumpto = row;
       var mode = window.sessionStorage.getItem("rentapmode");
       var inTrash = false;
-      var dbChanged = false;
       if (mode === "discarded") inTrash = true;
       if (clickButton == 'row') {
          var newrow = Number(document.getElementById("rownumber").value);
@@ -260,12 +259,13 @@ function jumpButton(){
          var rentapByID = JSON.parse(window.sessionStorage.getItem('rentapByIDJSON'));
          var id = Number(document.getElementById("idnumber").value);
          if (id in rentapByID) {
-            var inTrashNew = rentapByID[id][0];
-            if (inTrashNew != inTrash) {
-               dbChanged = true;
-               inTrash = inTrashNew;
+            var newrow = Number(rentapByID[id][1]);
+            if (newrow === -1) {
+               window.alert("The application with ID=" + id.toString() + " has been deleted from Trash");
+            } else {
+               inTrash= rentapByID[id][0];
+               jumpto = newrow;
             }
-            jumpto = Number(rentapByID[id][1]);
          } else {
             window.alert("No application available with ID: " + id.toString());
          }
@@ -281,7 +281,7 @@ function jumpButton(){
          if(typeof(db[jumpto]) != 'undefined') {
             window.sessionStorage.setItem('rentaprow',jumpto);
             displayRentap(db[jumpto]);
-            if(dbChanged) location.reload();
+            location.reload();
          } else {
             window.alert("The application found is undefined.");
          }

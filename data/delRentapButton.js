@@ -7,8 +7,13 @@ var row = window.sessionStorage.getItem("rentaprow");
 
 butt.addEventListener("click", 
    function() {                                          //handle onclick event
+      row = window.sessionStorage.getItem("rentaprow");  //make doubly sure have correct row before permanently deleting it
       var discards=JSON.parse(window.sessionStorage.getItem("rentapdiscardsJSON"));
+      var id = Number(discards[row][22]);
       discards.splice(row,1);
+      var rentapByID = JSON.parse(window.sessionStorage.getItem('rentapByIDJSON'));
+      rentapByID[id] = [true,-1] //true that it had been discarded, and -1 means not on any row now that it's deleted
+      window.sessionStorage.setItem('rentapByIDJSON',JSON.stringify(rentapByID));
       var i=0;
       if (row<discards.length) {
          i=row;
