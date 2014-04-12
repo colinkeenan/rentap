@@ -11,7 +11,7 @@ butt.addEventListener("click",
       var rentapByID = JSON.parse(window.sessionStorage.getItem('rentapByIDJSON'));
       var rentaps=JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
       var discards=JSON.parse(window.sessionStorage.getItem("rentapdiscardsJSON"));
-      var rentapID = discards[row][22];
+      var rentapID = Number(discards[row][22]);
       var newrow = 1;
       var inTrash = true;
       for (i=rentapID-1; inTrash && i>0; i--) {
@@ -24,7 +24,7 @@ butt.addEventListener("click",
       rentapByID[rentapID] = [false,newrow]; // false that it's discarded. it's now on newrow of rentaps
       //also need to update all the rows of rentaps after the inserted one at newrow
       for (var nrow=rentaps.length-1; nrow>=newrow; nrow--) 
-         rentapByID[rentaps[nrow][22]] = [false,nrow];
+         rentapByID[Number(rentaps[nrow][22])] = [false,nrow];
       window.sessionStorage.setItem("rentaprow",newrow);
       window.sessionStorage.setItem("rentapsJSON",JSON.stringify(rentaps));
       window.sessionStorage.setItem("rentapByIDJSON",JSON.stringify(rentapByID));

@@ -45,7 +45,7 @@ butt.addEventListener("click",
          row = rentaps.length;
          var rentapByID = JSON.parse(window.sessionStorage.getItem('rentapByIDJSON'));
          rentapByID.push([false,row]); //false that it's discarded. it's going to be at index row of rentaps
-         rentap[22] = rentapByID.length-1; //rentap[22] stores ID, the index into rentapByID giving location information
+         rentap[22] = (rentapByID.length-1).toString(); //rentap[22] stores ID, the index into rentapByID giving location information
          rentaps.push(rentap);
          window.sessionStorage.setItem("rentapByIDJSON",JSON.stringify(rentapByID));
          window.sessionStorage.setItem("rentapsJSON",JSON.stringify(rentaps));
