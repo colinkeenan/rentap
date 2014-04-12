@@ -89,7 +89,8 @@ function displayRentap(rentap) {
    if (mode === "discarded") {
       var f = document.forms[0];
       for(var i=0; i<f.length; i++)                 //don't allow editing discards. for some reason, don't have to worry
-        f.elements[i].readOnly = true;              // about turning readOnly off - it does automatically (on reload?)
+         if(f.elements[i].id != 'findname')         // about turning readOnly off - it does automatically (on reload?)
+            f.elements[i].readOnly = true;
    }
    document.getElementById('mode').value=mode;
 }
@@ -430,7 +431,7 @@ function toggleBorders() {
    var screencss=document.styleSheets[1];
    if (bordersVisible) {
       printcss.insertRule("*{border-width:0px}",0);
-      screencss.insertRule("*{border-width:0px}",0);
+      screencss.insertRule("td:not(#controls) div,td:not(#controls) input,td:not(#controls) textarea{border-width:0px}",0);
       bordersVisible = false;
    } else {
       printcss.deleteRule(0);
