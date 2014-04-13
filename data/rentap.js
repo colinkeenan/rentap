@@ -116,6 +116,9 @@ function restoreState() {
    window.onload = function() {
       var mode = window.sessionStorage.getItem("rentapmode"); 
       if(mode === 'new') {
+         var row = window.sessionStorage.getItem("rentaprow")
+         if (row == null) row = 0;
+         window.sessionStorage.setItem("rentaprow",row);
          setRheader();
       } else if(mode === 'edit') {
          var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
