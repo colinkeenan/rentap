@@ -7,13 +7,16 @@ var row = window.sessionStorage.getItem("rentaprow");
 
 butt.addEventListener("click", 
    function() {                                          //handle onclick event
-      row = window.sessionStorage.getItem("rentaprow");  //make doubly sure have correct row before permanently deleting it
+      // row above is only updated on window.reload, so have to update row again to be sure correct row is deleted
+      row = window.sessionStorage.getItem("rentaprow");
       var discards=JSON.parse(window.sessionStorage.getItem("rentapdiscardsJSON"));
       var id = Number(discards[row][22]);
       discards.splice(row,1);
       var rentapByID = JSON.parse(window.sessionStorage.getItem('rentapByIDJSON'));
-      rentapByID[id] = [true,-1] //true that it had been discarded, and -1 means not on any row now that it's deleted
-      window.sessionStorage.setItem('rentapByIDJSON',JSON.stringify(rentapByID));
+      rentapByID[id] = [true,-1]; //true that it had been discarded, and -1 means not on any row now that it's deleted
+      //also need to update the row of all discards that were after the one being deleted since they will be one row lower
+      for (var nrow=discards.length-1; nrow>=row; nrow--) 
+         rentapByID[Number(discards[nrow][22])] = [true,nrow];
       var i=0;
       if (row<discards.length) {
          i=row;
@@ -25,6 +28,7 @@ butt.addEventListener("click",
          window.sessionStorage.setItem("rentapmode","edit");
       }
       window.sessionStorage.setItem("rentaprow",i);
+      window.sessionStorage.setItem('rentapByIDJSON',JSON.stringify(rentapByID));
       window.sessionStorage.setItem("rentapdiscardsJSON",JSON.stringify(discards));
       self.postMessage(row);
    },
