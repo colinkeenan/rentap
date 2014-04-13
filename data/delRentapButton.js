@@ -13,7 +13,7 @@ butt.addEventListener("click",
       var id = Number(discards[row][22]);
       discards.splice(row,1);
       var rentapByID = JSON.parse(window.sessionStorage.getItem('rentapByIDJSON'));
-      rentapByID[id] = [true,-1]; //true that it had been discarded, and -1 means not on any row now that it's deleted
+      rentapByID[id] = [true,0]; //true that it had been discarded, and together with 0 signals that it has been deleted
       //also need to update the row of all discards that were after the one being deleted since they will be one row lower
       for (var nrow=discards.length-1; nrow>=row; nrow--) 
          rentapByID[Number(discards[nrow][22])] = [true,nrow];

@@ -259,12 +259,11 @@ function jumpButton(){
          var rentapByID = JSON.parse(window.sessionStorage.getItem('rentapByIDJSON'));
          var id = Number(document.getElementById("idnumber").value);
          if (id in rentapByID) {
-            var newrow = Number(rentapByID[id][1]);
-            if (newrow === -1) {
+            if (JSON.stringify(rentapByID[id]) === '[true,0]') {
                window.alert("The application with ID=" + id.toString() + " has been deleted from Trash");
             } else {
                inTrash= rentapByID[id][0];
-               jumpto = newrow;
+               jumpto = Number(rentapByID[id][1]);
             }
          } else {
             window.alert("No application available with ID: " + id.toString());
