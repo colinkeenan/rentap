@@ -262,31 +262,31 @@ function jumpButton(){
    if (really) {
       var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
       var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
+      var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
       var row = window.sessionStorage.getItem("rentaprow");
-      var jumpto = row;
+      var id = getID();
       var mode = window.sessionStorage.getItem("rentapmode");
       if (clickButton == 'row') {
          var newrow = Number(document.getElementById("rownumber").value);
-         window.sessionStorage.setItem("rentaprow",newrow); //temp setting rentaprow to test id
-         id = getID();
-         window.sessionStorage.setItem("rentaprow",row); //restoring rentaprow for now
-         if (id === -1) {
+         window.sessionStorage.setItem("rentaprow",newrow); //temp setting rentaprow to test new id
+         if (getID() === -1) 
             window.alert("No application available at row: " + newrow.toString());
+         else
             id = getID();
-         }
+         window.sessionStorage.setItem("rentaprow",row); //restoring rentaprow for now
       } else if (clickButton == 'id') {
-         var id = Number(document.getElementById("idnumber").value);
-         if (0<=id && id<rentaps.length) {
-            if (rentaps[id] == null) {
+         var newid = Number(document.getElementById("idnumber").value);
+         if (0<=newid && newid<rentaps.length) {
+            if (rentaps[id] == null) 
                window.alert("The application with ID=" + id.toString() + " has been deleted from Trash");
-               id = getID();
-            } 
+            else
+               id = newid; 
          } else {
             window.alert("No application available with ID: " + id.toString());
-            id = getID();
          }
       }
       var trashrow = trash.indexOf(id);
+      var jumpto;
       if (trashrow != -1) {
          window.sessionStorage.setItem('rentapmode','discarded');
          jumpto = trashrow;
