@@ -3,12 +3,12 @@
 //   rentapRHEADERi      (index of currently displayed rentap header)
 //   rentapsJSON         (array of rentap applications as arrays)
 //   rentapDisplayedJSON (currently displayed information as array)
-//   rentapdiscardsJSON  (array of discarded rentap applications as arrays)
-//   rentapByIDJSON      (rentapByID[ID] = [isTrash,row] giving row of rentap with ID and wether in discards or rentaps)
+//   rentaptrashJSON     (array of indices to discarded rentap applications)
+//   rentapkeptJSON      (array of indices of kept rentap applications - any in rentaps that aren't in trash)
 //   rentapsFoundJSON    (array of rentap applications that were found from searchbutton)
 //   rentaprow           (index of rentap currently displayed)
 //   rentapprevrow       (index of rentap that was displayed just before the current one, or -1 if not known)
-//   rentaptemprow       (index of rentap displayed before showing discards by pressing Trash button)
+//   rentaptemprow       (index of rentap displayed before showing trash by pressing Trash button)
 //   rentapmode          (new, edit)
 //   rentapCSV           (text entered into the CSV box)
 //   rentapSQL           (text entered into the SQL box)
@@ -90,7 +90,7 @@ function displayRentap(rentap) {
    }
    if (mode === "discarded") {
       var f = document.forms[0];
-      for(var i=0; i<f.length; i++)                 //don't allow editing discards.
+      for(var i=0; i<f.length; i++)                 //don't allow editing trash.
          if(f.elements[i].id != 'findname' && f.elements[i].id != 'rownumber' && f.elements[i].id != 'idnumber')
             f.elements[i].readOnly = true;
    }
@@ -112,38 +112,49 @@ function setRheader() {
    document.getElementById('mode').value=mode;
 }
 
+function getID() {
+   var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
+   var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
+   var mode = window.sessionStorage.getItem("rentapmode");
+   if(mode === 'edit' && 0<=row && row<kept.length)
+      return Number(kept[row]);
+   else if(mode === 'discarded' && 0<=row && row<trash.length) 
+      return Number(trash[row]);
+   else
+      return -1;
+}
+
 function restoreState() {
    window.onload = function() {
+      var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
+      var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
+      var kept = [];
+      var id = rentaps.length;
+      while (id--)
+         if (rentaps[id]!=null && trash.indexOf(id)===-1)
+            kept.push(id);
+      window.sessionStorage.setItem("rentapkeptJSON",JSON.parse(kept))
       var mode = window.sessionStorage.getItem("rentapmode"); 
+      var row = window.sessionStorage.getItem("rentaprow")
+      if (row == null) row = 0;
       if(mode === 'new') {
-         var row = window.sessionStorage.getItem("rentaprow")
-         if (row == null) row = 0;
          window.sessionStorage.setItem("rentaprow",row);
          setRheader();
-      } else if(mode === 'edit') {
-         var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
-         var row = window.sessionStorage.getItem("rentaprow")
-         if(typeof(rentaps[row]) != 'undefined') {
-            displayRentap(rentaps[row]);
+      } else {
+         id = getID() 
+         if(mode != 'edited') {
+            if(typeof(rentaps[id]) != 'undefined') {
+               displayRentap(rentaps[id]);
+            } else {
+               window.sessionStorage.setItem("rentapprevrow",-1);
+               row=0;
+               window.sessionStorage.setItem("rentaprow",row);
+            }
          } else {
-            window.sessionStorage.setItem("rentapprevrow",-1);
-            row=0;
-            window.sessionStorage.setItem("rentaprow",row);
-         }
-      } else if(mode === 'discarded') {
-         var discards = JSON.parse(window.sessionStorage.getItem("rentapdiscardsJSON"));
-         var row = window.sessionStorage.getItem("rentaprow")
-         if(typeof(discards[row]) != 'undefined') {
-            displayRentap(discards[row]);
-         } else {
-            window.sessionStorage.setItem("rentapprevrow",-1);
-            row=0;
-            window.sessionStorage.setItem("rentaprow",row);
-         }
-      } else if(mode === 'edited') {
             window.sessionStorage.setItem("rentapmode","edit");
             var displayedRentap = JSON.parse(window.sessionStorage.getItem('rentapDisplayedJSON'));
             displayRentap(displayedRentap);
+         }
       }
       populateChooseName();
       populateSelectHeader();
@@ -190,14 +201,6 @@ function clearCSV() {
    window.sessionStorage.setItem("rentapCSV","");
 }
 
-function getDatabase() {
-   var mode = window.sessionStorage.getItem("rentapmode");
-   if (mode != "discarded") 
-      return JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
-   else
-      return JSON.parse(window.sessionStorage.getItem("rentapdiscardsJSON"));
-}
-
 function editedVerifyReally() {
    var mode = window.sessionStorage.getItem("rentapmode");
    if (mode === "discarded")
@@ -205,6 +208,7 @@ function editedVerifyReally() {
    var displayedRentap = rentapDisplayed();
    var rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
    var row = window.sessionStorage.getItem('rentaprow');
+   var id = getID();
    var edited = false;
    if (mode === "new") {
       for (var i=0; i<16; i++) {   // 16 and above is just header and date
@@ -213,7 +217,7 @@ function editedVerifyReally() {
       }
    } else {
       for (var i=0; i<rentaps[row].length; i++) {
-         if (displayedRentap[i] != rentaps[row][i]) 
+         if (displayedRentap[i] != rentaps[id][i]) 
             edited = true;
       }
    }
@@ -230,59 +234,71 @@ function editedVerifyReally() {
 function prevButton() {   
    var really= editedVerifyReally();
    if (really) {
-      var rentaps = getDatabase();
-      var row = window.sessionStorage.getItem("rentaprow")
+      var rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
+      var row = window.sessionStorage.getItem('rentaprow');
       window.sessionStorage.setItem("rentapprevrow",row);
       if (row>1) row--; else row=rentaps.length-1;
       window.sessionStorage.setItem('rentaprow',row);
-      if(typeof(rentaps[row]) != 'undefined') displayRentap(rentaps[row]);
+      var id = getID();
+      if(typeof(rentaps[id]) != 'undefined') displayRentap(rentaps[id]);
    }
 } 
+
+function nextButton() {   
+   var really= editedVerifyReally();
+   if (really) {
+      var rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
+      var row = window.sessionStorage.getItem('rentaprow');
+      window.sessionStorage.setItem("rentapprevrow",row);
+      if (row<rentaps.length-1) row++; else row=1;
+      window.sessionStorage.setItem('rentaprow',row);
+      var id = getID();
+      if(typeof(rentaps[id]) != 'undefined') displayRentap(rentaps[id]);
+   } 
+}
 
 function jumpButton(){
    var really= editedVerifyReally();
    if (really) {
-      var db = getDatabase();
       var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
-      var discards = JSON.parse(window.sessionStorage.getItem("rentapdiscardsJSON"));
+      var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
       var row = window.sessionStorage.getItem("rentaprow");
-      window.sessionStorage.setItem("rentapprevrow",row);
       var jumpto = row;
       var mode = window.sessionStorage.getItem("rentapmode");
-      var inTrash = false;
-      if (mode === "discarded") inTrash = true;
       if (clickButton == 'row') {
          var newrow = Number(document.getElementById("rownumber").value);
-         if (newrow in db) {
-            jumpto = newrow;
-         } else {
+         window.sessionStorage.setItem("rentaprow",newrow); //temp setting rentaprow to test id
+         id = getID();
+         window.sessionStorage.setItem("rentaprow",row); //restoring rentaprow for now
+         if (id === -1) {
             window.alert("No application available at row: " + newrow.toString());
+            id = getID();
          }
       } else if (clickButton == 'id') {
-         var rentapByID = JSON.parse(window.sessionStorage.getItem('rentapByIDJSON'));
          var id = Number(document.getElementById("idnumber").value);
-         if (id in rentapByID) {
-            if (JSON.stringify(rentapByID[id]) === '[true,0]') {
+         if (0<=id && id<rentaps.length) {
+            if (rentaps[id] == null) {
                window.alert("The application with ID=" + id.toString() + " has been deleted from Trash");
-            } else {
-               inTrash= rentapByID[id][0];
-               jumpto = Number(rentapByID[id][1]);
-            }
+               id = getID();
+            } 
          } else {
             window.alert("No application available with ID: " + id.toString());
+            id = getID();
          }
       }
-      if (inTrash) {
+      var trashrow = trash.indexOf(id);
+      if (trashrow != -1) {
          window.sessionStorage.setItem('rentapmode','discarded');
-         db = discards;
+         jumpto = trashrow;
       } else {
          window.sessionStorage.setItem('rentapmode','edit');
-         db = rentaps;
+         jumpto = kept.indexOf(id);
       }
-      if (jumpto in db) {       
-         if(typeof(db[jumpto]) != 'undefined') {
+      if (0<=id && id<rentaps.length) {
+         if(typeof(rentaps[id]) != 'undefined') {
+            window.sessionStorage.setItem("rentapprevrow",row);
             window.sessionStorage.setItem('rentaprow',jumpto);
-            displayRentap(db[jumpto]);
+            displayRentap(rentaps[id]);
             location.reload();
          } else {
             window.alert("The application found is undefined.");
@@ -293,20 +309,8 @@ function jumpButton(){
    }
 } 
 
-function nextButton() {   
-   var really= editedVerifyReally();
-   if (really) {
-      var rentaps = getDatabase();
-      var row = window.sessionStorage.getItem("rentaprow");
-      window.sessionStorage.setItem("rentapprevrow",row);
-      if (row<rentaps.length-1) row++; else row=1;
-      window.sessionStorage.setItem('rentaprow',row);
-      if(typeof(rentaps[row]) != 'undefined') displayRentap(rentaps[row]);
-   } 
-}
-
 function searchButton() {
-   var rentaps = getDatabase();
+   var rentaps = getID();
    var findname = document.getElementById('findname').value;
    if (findname === "") {
       window.sessionStorage.setItem('rentapsFoundJSON',null);
@@ -377,7 +381,7 @@ function populateSelectHeader() {
 }
 
 function populateChooseName() {
-   var rentaps = getDatabase();
+   var rentaps = getID();
    var searchSel = document.getElementById("listsearchmenu").firstChild;   
    for(var i = searchSel.options.length-1; i>=1; i--)
      searchSel.remove(i);
@@ -423,7 +427,7 @@ function trashButton() {
    butt.appendChild(btext);                                 //attach text to the button
    
    var mode = window.sessionStorage.getItem('rentapmode');
-   var discards = JSON.parse(window.sessionStorage.getItem('rentapdiscardsJSON'));
+   var trash = JSON.parse(window.sessionStorage.getItem('rentaptrashJSON'));
    
    butt.addEventListener("click", 
       function() {                                          //handle onclick event
@@ -433,13 +437,13 @@ function trashButton() {
             window.sessionStorage.setItem("rentaprow",1);
             window.sessionStorage.setItem("rentapprevrow",-1);
             window.sessionStorage.setItem("rentapmode","discarded");
-            displayRentap(discards[1]);
+            displayRentap(trash[1]);
             location.reload(); // make sure addon buttons know it's row 1
          } 
       },
    false);
    
-   if(mode != "discarded" && discards.length >= 2) 
+   if(mode != "discarded" && trash.length >= 2) 
       document.getElementById("trashbutton").appendChild(butt); //put the Trash button on the page only if there's trash and not already in the trash
 }
 

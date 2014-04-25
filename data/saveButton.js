@@ -32,26 +32,26 @@ butt.addEventListener("click",
          document.getElementById('rentapID').value   //22
       ]
       var mode = window.sessionStorage.getItem('rentapmode');
+      var row = window.sessionStorage.getItem('rentaprow');
       rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
+      var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
       if (mode==="edit") {
-         var row = window.sessionStorage.getItem('rentaprow');
-         rentaps[row] = rentap;
+         var id = Number(kept[row]);
+         rentaps[id] = rentap;
          window.sessionStorage.setItem("rentapsJSON",JSON.stringify(rentaps));
-         self.postMessage(['edit',row,rentap]);
-      }
-      else {
-         var row = window.sessionStorage.getItem('rentaprow');
+         self.postMessage(['edit',id,rentap]);
+      } else {
          window.sessionStorage.setItem("rentapprevrow",row);
-         row = rentaps.length;
-         var rentapByID = JSON.parse(window.sessionStorage.getItem('rentapByIDJSON'));
-         rentapByID.push([false,row]); //false that it's discarded. it's going to be at index row of rentaps
-         rentap[22] = (rentapByID.length-1).toString(); //rentap[22] stores ID, the index into rentapByID giving location information
+         var id = rentaps.length;
+         rentap[22] = id.toString();
          rentaps.push(rentap);
-         window.sessionStorage.setItem("rentapByIDJSON",JSON.stringify(rentapByID));
+         row = kept.length;
+         kept.push(id);
+         window.sessionStorage.setItem("rentapskeptJSON",JSON.stringify(kept));
          window.sessionStorage.setItem("rentapsJSON",JSON.stringify(rentaps));
          window.sessionStorage.setItem('rentaprow',row);
          window.sessionStorage.setItem('rentapmode','edit'); //having saved the application, further changes would be an edit
-         self.postMessage(['new',row,rentap]); //save in simple storage 
+         self.postMessage(['new',id,rentap]); //save in simple storage 
       }
    },
 false);
