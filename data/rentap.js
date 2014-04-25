@@ -116,12 +116,26 @@ function getID() {
    var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
    var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
    var mode = window.sessionStorage.getItem("rentapmode");
+   var row = window.sessionStorage.getItem("rentaprow")
    if(mode === 'edit' && 0<=row && row<kept.length)
       return Number(kept[row]);
    else if(mode === 'discarded' && 0<=row && row<trash.length) 
       return Number(trash[row]);
    else
       return -1;
+}
+
+function getRowOfIDandSetMode(id) {
+   var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
+   var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
+   var trashrow = trash.indexOf(id);
+   if(trashrow === -1) {
+      window.sessionStorage.setItem('rentapmode','edit');
+      return kept.indexOf(id);
+   } else {
+      window.sessionStorage.setItem('rentapmode','discarded');
+      return trashrow;
+   }
 }
 
 function restoreState() {
@@ -285,17 +299,9 @@ function jumpButton(){
             window.alert("No application available with ID: " + id.toString());
          }
       }
-      var trashrow = trash.indexOf(id);
-      var jumpto;
-      if (trashrow != -1) {
-         window.sessionStorage.setItem('rentapmode','discarded');
-         jumpto = trashrow;
-      } else {
-         window.sessionStorage.setItem('rentapmode','edit');
-         jumpto = kept.indexOf(id);
-      }
       if (0<=id && id<rentaps.length) {
          if(typeof(rentaps[id]) != 'undefined') {
+            var jumpto = getRowOfIDandSetMode(id);
             window.sessionStorage.setItem("rentapprevrow",row);
             window.sessionStorage.setItem('rentaprow',jumpto);
             displayRentap(rentaps[id]);
@@ -310,7 +316,14 @@ function jumpButton(){
 } 
 
 function searchButton() {
-   var rentaps = getID();
+   var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
+   var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
+   var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
+   var mode = window.sessionStorage.getItem('rentapmode');
+   if (mode === 'edit')
+      ids = kept;
+   else
+      ids = trash;
    var findname = document.getElementById('findname').value;
    if (findname === "") {
       window.sessionStorage.setItem('rentapsFoundJSON',null);
@@ -320,9 +333,9 @@ function searchButton() {
       else var regexp = RegExp(findname, "ig");
       var i = 1; //don't search on row 0 which is the instructions page
       var found = [[[]]];
-      while (i < rentaps.length) {   
+      while (i < ids.length) {   
          regexp.lastIndex = 0;  //if don't reset lastIndex, it will test this string starting from the position the pattern was found in the previous string
-         if (regexp.test(rentaps[i])) found.push([i,rentaps[i]]); 
+         if (regexp.test(rentaps[ids[i]])) found.push([i,rentaps[ids[i]]]); 
          i++;
       }   
       if(typeof(found[1]) != 'undefined') {
