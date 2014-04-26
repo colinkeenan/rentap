@@ -6,10 +6,17 @@
 //   rentapprevrow     (index of application that was visible just before this one, or -1 if not known)
 
 self.on("message", function(simpleStorage) {
+   var rentaps = simpleStorage[1];
+   var trash = simpleStorage[2];
    window.sessionStorage.setItem("rentapRHEADERJSON", JSON.stringify(simpleStorage[0]));
-   window.sessionStorage.setItem("rentapsJSON", JSON.stringify(simpleStorage[1]));
-   window.sessionStorage.setItem("rentaptrashJSON", JSON.stringify(simpleStorage[2]));
+   window.sessionStorage.setItem("rentapsJSON", JSON.stringify(rentaps));
+   window.sessionStorage.setItem("rentaptrashJSON", JSON.stringify(trash));
    window.sessionStorage.setItem("rentapmode","new"); // either just started rentap or clicked "new" link
+   var kept = [];
+   for (var id = 0, l = rentaps.length; id<l; id++)
+      if (rentaps[id]!=null && trash.indexOf(id)===-1)
+         kept.push(id);
+   window.sessionStorage.setItem("rentapkeptJSON",JSON.stringify(kept))
    var prevrow = window.sessionStorage.getItem('rentapprevrow');
    if (prevrow == null)
       window.sessionStorage.setItem('rentapprevrow',-1);

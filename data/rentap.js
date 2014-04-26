@@ -152,11 +152,7 @@ function restoreState() {
    window.onload = function() {
       var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
       var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
-      var kept = [];
-      for (var l = rentaps.length, id = 0; id<l; id++)
-         if (rentaps[id]!=null && trash.indexOf(id)===-1)
-            kept.push(id);
-      window.sessionStorage.setItem("rentapkeptJSON",JSON.stringify(kept))
+      var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
       var mode = window.sessionStorage.getItem("rentapmode"); 
       var row = window.sessionStorage.getItem("rentaprow")
       if (row == null) row = 0;
