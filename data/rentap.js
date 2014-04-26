@@ -354,6 +354,109 @@ function searchButton() {
    }
 }
 
+function populateChooseName() {
+   var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
+   var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
+   var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
+   var mode = window.sessionStorage.getItem('rentapmode');
+   if (mode === 'edit')
+      ids = kept;
+   else
+      ids = trash;
+   var searchSel = document.getElementById("listsearchmenu").firstChild;   
+   for(var i = searchSel.options.length-1; i>=1; i--)
+     searchSel.remove(i);
+   var rentapsFoundJSON = window.sessionStorage.getItem('rentapsFoundJSON');
+   var found = JSON.parse(rentapsFoundJSON);
+   if(rentapsFoundJSON != null && found != null) {
+      while (searchSel.length < found.length) {
+         var namei = document.createElement("option");
+         var i = searchSel.length;
+         namei.text = (found[i][1])[0];
+         namei.value = found[i][0];
+         searchSel.add(namei, null);
+      }
+   } else {
+      while (searchSel.length < ids.length) {
+         var namei = document.createElement("option");
+         var i = searchSel.length;
+         namei.text = rentaps[ids[i]][0];
+         namei.value = i;
+         searchSel.add(namei, null);
+      }
+   };
+
+   searchSel.onchange = 
+      function(){
+         var really= editedVerifyReally();
+         if (really) {
+            var i = searchSel.selectedIndex;
+            var prevrow = window.sessionStorage.getItem('rentaprow');
+            if(i != 0) {
+               var j = searchSel.options[i].value;
+               window.sessionStorage.setItem('rentapprevrow',prevrow);
+               window.sessionStorage.setItem('rentaprow',j);
+               displayRentap(rentaps[ids[j]]);
+            }
+         }
+      }
+}
+
+function trashButton() {
+   var butt = document.createElement("button");             //define button element
+   var btext = document.createTextNode("Trash");            //define the text
+   butt.appendChild(btext);                                 //attach text to the button
+   
+   var mode = window.sessionStorage.getItem('rentapmode');
+   var trash = JSON.parse(window.sessionStorage.getItem('rentaptrashJSON'));
+   var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
+   
+   butt.addEventListener("click", 
+      function() {                                          //handle onclick event
+         var really= editedVerifyReally();
+         if (really) {
+            window.sessionStorage.setItem("rentaptemprow",window.sessionStorage.getItem('rentaprow'))
+            window.sessionStorage.setItem("rentaprow",1);
+            window.sessionStorage.setItem("rentapprevrow",-1);
+            window.sessionStorage.setItem("rentapmode","discarded");
+            displayRentap(rentaps[trash[1]]);
+            location.reload(); // make sure addon buttons know it's row 1
+         } 
+      },
+   false);
+   
+   if(mode != "discarded" && trash.length >= 2) 
+      document.getElementById("trashbutton").appendChild(butt); //put the Trash button on the page only if there's trash and not already in the trash
+}
+
+function backButton() {
+   var butt = document.createElement("button");             //define button element
+   var btext = document.createTextNode("Back");             //define the text
+   butt.appendChild(btext);                                 //attach text to the button
+   
+   var rentapmode = window.sessionStorage.getItem('rentapmode');
+   var rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
+   var row = window.sessionStorage.getItem('rentaptemprow');
+   var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
+   if (row == null)
+      var row = kept.length-1;
+   window.sessionStorage.setItem('rentapprevrow',-1); 
+   
+   butt.addEventListener("click", 
+      function() {                                          //handle onclick event
+         if (typeof(rentaps[kept[row]]) === 'undefined' ) 
+            row = kept.length-1;
+         window.sessionStorage.setItem("rentaprow",row);
+         window.sessionStorage.setItem("rentapmode","edit");
+         displayRentap(rentaps[kept[row]]);
+         location.reload(); // make sure addon buttons know what row we're on now
+      },
+   false);
+   
+   if(rentapmode === "discarded")
+      document.getElementById("backbutton").appendChild(butt); //put the Back button on the page only if viewing a discarded rentap
+}
+
 var clickButton
 
 function setClickButton(button) {
@@ -391,100 +494,6 @@ function populateSelectHeader() {
          window.sessionStorage.setItem("rentapRHEADERi",i);
          setRheader() 
       }
-}
-
-function populateChooseName() {
-   var rentaps = getID();
-   var searchSel = document.getElementById("listsearchmenu").firstChild;   
-   for(var i = searchSel.options.length-1; i>=1; i--)
-     searchSel.remove(i);
-   var rentapsFoundJSON = window.sessionStorage.getItem('rentapsFoundJSON');
-   var found = JSON.parse(rentapsFoundJSON);
-   if(rentapsFoundJSON != null && found != null) {
-      while (searchSel.length < found.length) {
-         var namei = document.createElement("option");
-         var i = searchSel.length;
-         namei.text = (found[i][1])[0];
-         namei.value = found[i][0];
-         searchSel.add(namei, null);
-      }
-   } else {
-      while (searchSel.length < rentaps.length) {
-         var namei = document.createElement("option");
-         var i = searchSel.length;
-         namei.text = rentaps[i][0];
-         namei.value = i;
-         searchSel.add(namei, null);
-      }
-   };
-
-   searchSel.onchange = 
-      function(){
-         var really= editedVerifyReally();
-         if (really) {
-            var i = searchSel.selectedIndex;
-            var prevrow = window.sessionStorage.getItem('rentaprow');
-            if(i != 0) {
-               var j = searchSel.options[i].value;
-               window.sessionStorage.setItem('rentapprevrow',prevrow);
-               window.sessionStorage.setItem('rentaprow',j);
-               displayRentap(rentaps[j]);
-            }
-         }
-      }
-}
-
-function trashButton() {
-   var butt = document.createElement("button");             //define button element
-   var btext = document.createTextNode("Trash");            //define the text
-   butt.appendChild(btext);                                 //attach text to the button
-   
-   var mode = window.sessionStorage.getItem('rentapmode');
-   var trash = JSON.parse(window.sessionStorage.getItem('rentaptrashJSON'));
-   
-   butt.addEventListener("click", 
-      function() {                                          //handle onclick event
-         var really= editedVerifyReally();
-         if (really) {
-            window.sessionStorage.setItem("rentaptemprow",window.sessionStorage.getItem('rentaprow'))
-            window.sessionStorage.setItem("rentaprow",1);
-            window.sessionStorage.setItem("rentapprevrow",-1);
-            window.sessionStorage.setItem("rentapmode","discarded");
-            displayRentap(trash[1]);
-            location.reload(); // make sure addon buttons know it's row 1
-         } 
-      },
-   false);
-   
-   if(mode != "discarded" && trash.length >= 2) 
-      document.getElementById("trashbutton").appendChild(butt); //put the Trash button on the page only if there's trash and not already in the trash
-}
-
-function backButton() {
-   var butt = document.createElement("button");             //define button element
-   var btext = document.createTextNode("Back");             //define the text
-   butt.appendChild(btext);                                 //attach text to the button
-   
-   var rentapmode = window.sessionStorage.getItem('rentapmode');
-   var rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
-   var row = window.sessionStorage.getItem('rentaptemprow');
-   if (row == null)
-      var row = rentaps.length-1;
-   window.sessionStorage.setItem('rentapprevrow',-1); 
-   
-   butt.addEventListener("click", 
-      function() {                                          //handle onclick event
-         if (typeof(rentaps[row]) === 'undefined' ) 
-            row = rentaps.length-1;
-         window.sessionStorage.setItem("rentaprow",row);
-         window.sessionStorage.setItem("rentapmode","edit");
-         displayRentap(rentaps[row]);
-         location.reload(); // make sure addon buttons know what row we're on now
-      },
-   false);
-   
-   if(rentapmode === "discarded")
-      document.getElementById("backbutton").appendChild(butt); //put the Back button on the page only if viewing a discarded rentap
 }
 
 var bordersVisible = true;
