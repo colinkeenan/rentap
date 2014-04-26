@@ -112,6 +112,16 @@ function setRheader() {
    document.getElementById('mode').value=mode;
 }
 
+function getIDlist() {
+   var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
+   var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
+   var mode = window.sessionStorage.getItem("rentapmode");
+   if (mode === 'edit')
+      return kept;
+   else
+      return trash;
+}
+
 function getID() {
    var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
    var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
@@ -143,8 +153,7 @@ function restoreState() {
       var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
       var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
       var kept = [];
-      var id = rentaps.length;
-      while (id--)
+      for (var l = rentaps.length, id = 0; id<l; id++)
          if (rentaps[id]!=null && trash.indexOf(id)===-1)
             kept.push(id);
       window.sessionStorage.setItem("rentapkeptJSON",JSON.parse(kept))
@@ -155,7 +164,7 @@ function restoreState() {
          window.sessionStorage.setItem("rentaprow",row);
          setRheader();
       } else {
-         id = getID() 
+         id = getID(); 
          if(mode != 'edited') {
             if(typeof(rentaps[id]) != 'undefined') {
                displayRentap(rentaps[id]);
@@ -250,11 +259,11 @@ function prevButton() {
    if (really) {
       var rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
       var row = window.sessionStorage.getItem('rentaprow');
+      var ids = getIDlist();
       window.sessionStorage.setItem("rentapprevrow",row);
       if (row>1) row--; else row=rentaps.length-1;
       window.sessionStorage.setItem('rentaprow',row);
-      var id = getID();
-      if(typeof(rentaps[id]) != 'undefined') displayRentap(rentaps[id]);
+      if(typeof(rentaps[ids[row]]) != 'undefined') displayRentap(rentaps[id]);
    }
 } 
 
@@ -263,11 +272,11 @@ function nextButton() {
    if (really) {
       var rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
       var row = window.sessionStorage.getItem('rentaprow');
+      var ids = getIDlist();
       window.sessionStorage.setItem("rentapprevrow",row);
-      if (row<rentaps.length-1) row++; else row=1;
+      if (row<ids.length-1) row++; else row=1;
       window.sessionStorage.setItem('rentaprow',row);
-      var id = getID();
-      if(typeof(rentaps[id]) != 'undefined') displayRentap(rentaps[id]);
+      if(typeof(rentaps[ids[row]]) != 'undefined') displayRentap(rentaps[id]);
    } 
 }
 
@@ -317,13 +326,7 @@ function jumpButton(){
 
 function searchButton() {
    var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
-   var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
-   var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
-   var mode = window.sessionStorage.getItem('rentapmode');
-   if (mode === 'edit')
-      ids = kept;
-   else
-      ids = trash;
+   var ids = getIDlist();
    var findname = document.getElementById('findname').value;
    if (findname === "") {
       window.sessionStorage.setItem('rentapsFoundJSON',null);
@@ -356,13 +359,7 @@ function searchButton() {
 
 function populateChooseName() {
    var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
-   var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
-   var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
-   var mode = window.sessionStorage.getItem('rentapmode');
-   if (mode === 'edit')
-      ids = kept;
-   else
-      ids = trash;
+   var ids = getIDlist();
    var searchSel = document.getElementById("listsearchmenu").firstChild;   
    for(var i = searchSel.options.length-1; i>=1; i--)
      searchSel.remove(i);
