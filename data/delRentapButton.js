@@ -6,14 +6,11 @@ var mode = window.sessionStorage.getItem("mode");
 var row = window.sessionStorage.getItem("rentaprow");
 
 function getID() {
-   var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
    var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
    // row and mode above are only updated on window.reload, so have to update here too
    mode = window.sessionStorage.getItem("mode");
    row = window.sessionStorage.getItem("rentaprow")
-   if(mode === 'edit' && 0<=row && row<kept.length)
-      return Number(kept[row]);
-   else if(mode === 'discarded' && 0<=row && row<trash.length) 
+   if(mode === 'discarded' && 0<row && row<trash.length) // since the del button isn't visible unless this is true, should always pass
       return Number(trash[row]);
    else
       return -1;
@@ -25,18 +22,21 @@ butt.addEventListener("click",
       var id = getID(); //row gets updated in getID()
       if (id != -1) {
          rentaps[id] = null;
-         if (row<trash.length - 1) {
-            row++;
-         } else if (row>0) {
-            row--;
-         } else {
-            row = window.sessionStorage.getItem('rentaptemprow');
-            if (row == null) row = 0;
+         var newrow = row; //can't modify row because need to send it to worker when done
+         if (trash.length > 1 && newrow !=0) { //should be no way for newrow to be 0, but checking anyway
+            window.sessionStorage.setItem("rentapprevrow",row);
+            if (newrow<trash.length - 1) newrow++;
+            else newrow = 1;  
+         } else { //nothing left in trash so go back to kept rows
+            window.sessionStorage.setItem("rentapprevrow",-1);
+            newrow = window.sessionStorage.getItem('rentaptemprow');
+            if (newrow == null) newrow = 0;
             window.sessionStorage.setItem("mode","edit");
          }
-         window.sessionStorage.setItem("rentaprow",row);
+         window.sessionStorage.setItem("rentaprow",newrow);
          window.sessionStorage.setItem("rentaptrashJSON",JSON.stringify(trash));
-         self.postMessage(row);
+         if (trash.length > 1 && row !=0)
+            self.postMessage(row); //sending original row to worker to delete from simpleStorage
       }
    },
 false);
