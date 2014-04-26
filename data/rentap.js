@@ -156,7 +156,7 @@ function restoreState() {
       for (var l = rentaps.length, id = 0; id<l; id++)
          if (rentaps[id]!=null && trash.indexOf(id)===-1)
             kept.push(id);
-      window.sessionStorage.setItem("rentapkeptJSON",JSON.parse(kept))
+      window.sessionStorage.setItem("rentapkeptJSON",JSON.stringify(kept))
       var mode = window.sessionStorage.getItem("rentapmode"); 
       var row = window.sessionStorage.getItem("rentaprow")
       if (row == null) row = 0;
