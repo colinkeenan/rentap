@@ -10,33 +10,32 @@ function getID() {
    // row and mode above are only updated on window.reload, so have to update here too
    mode = window.sessionStorage.getItem("mode");
    row = window.sessionStorage.getItem("rentaprow")
-   if(mode === 'discarded' && 0<row && row<trash.length) // since the del button isn't visible unless this is true, should always pass
+   if(mode === 'discarded' && 0<row && row<trash.length) //since the del button isn't visible unless this is true, should always pass
       return Number(trash[row]);
    else
-      return -1;
+      return -1;                                         //should never actually return -1
 }
 
 butt.addEventListener("click", 
-   function() {                                          //handle onclick event
-   // won't be changing trash at all because want to keep index of deleted rentaps
+   function() {                                                                //handle onclick event
       var id = getID(); //row gets updated in getID()
-      if (id != -1) {
-         rentaps[id] = null;
-         var newrow = row; //can't modify row because need to send it to worker when done
-         if (trash.length > 1 && newrow !=0) { //should be no way for newrow to be 0, but checking anyway
+      var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
+      if (id != -1) {                                                          //don't expect id to ever be -1
+         rentaps[id] = null; //not splicing because want to preserve id's
+         trash.splice(row,1);//but don't need to track it in trash
+         if (trash.length > 1) {
             window.sessionStorage.setItem("rentapprevrow",row);
-            if (newrow<trash.length - 1) newrow++;
-            else newrow = 1;  
+            if (row<trash.length - 1) row++;
+            else row = 1;  
          } else { //nothing left in trash so go back to kept rows
             window.sessionStorage.setItem("rentapprevrow",-1);
-            newrow = window.sessionStorage.getItem('rentaptemprow');
-            if (newrow == null) newrow = 0;
+            row = window.sessionStorage.getItem('rentaptemprow');
+            if (row == null) row = 0;
             window.sessionStorage.setItem("mode","edit");
          }
-         window.sessionStorage.setItem("rentaprow",newrow);
+         window.sessionStorage.setItem("rentaprow",row);
          window.sessionStorage.setItem("rentaptrashJSON",JSON.stringify(trash));
-         if (trash.length > 1 && row !=0)
-            self.postMessage(row); //sending original row to worker to delete from simpleStorage
+         self.postMessage(id);
       }
    },
 false);

@@ -294,12 +294,13 @@ function jumpButton(){
       var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
       var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
       var row = window.sessionStorage.getItem("rentaprow");
-      var id = getID();
+      var id = getID(); //initialize at current id in case can't jump
+      var CURRENT = id;
       var mode = window.sessionStorage.getItem("rentapmode");
       if (clickButton == 'row') {
          var newrow = Number(document.getElementById("rownumber").value);
-         window.sessionStorage.setItem("rentaprow",newrow); //temp setting rentaprow to test new id
-         if (getID() === -1) 
+         window.sessionStorage.setItem("rentaprow",newrow); 
+         if (getID() === -1) //getID() here will get the ID that matches newrow
             window.alert("No application available at row: " + newrow.toString());
          else
             id = getID();
@@ -307,7 +308,7 @@ function jumpButton(){
       } else if (clickButton == 'id') {
          var newid = Number(document.getElementById("idnumber").value);
          if (0<=newid && newid<rentaps.length) {
-            if (rentaps[id] == null) 
+            if (rentaps[newid] == null) 
                window.alert("The application with ID=" + id.toString() + " has been deleted from Trash");
             else
                id = newid; 
@@ -315,7 +316,7 @@ function jumpButton(){
             window.alert("No application available with ID: " + id.toString());
          }
       }
-      if (0<=id && id<rentaps.length) {
+      if (id!=CURRENT && 0<=id && id<rentaps.length) {
          if(typeof(rentaps[id]) != 'undefined') {
             var jumpto = getRowOfIDandSetMode(id);
             window.sessionStorage.setItem("rentapprevrow",row);
