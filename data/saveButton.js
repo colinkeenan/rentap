@@ -2,7 +2,7 @@ var butt = document.createElement("button");             //define button element
 var btext = document.createTextNode("Save");             //define the text
 butt.appendChild(btext);                                 //attach text to the button
 
-var rentapmode = window.sessionStorage.getItem("rentapmode");
+var mode = window.sessionStorage.getItem("mode");
 
 butt.addEventListener("click", 
    function() {                                          //handle onclick event
@@ -29,9 +29,8 @@ butt.addEventListener("click",
          document.getElementById('rentaladdress').value, //19
          document.getElementById('rentalcitystzip').value,  //20
          document.getElementById('rtitle').value,    //21
-         document.getElementById('rentapID').value   //22
       ]
-      var mode = window.sessionStorage.getItem('rentapmode');
+      mode = window.sessionStorage.getItem('mode');
       var row = window.sessionStorage.getItem('rentaprow');
       rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
       var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
@@ -43,19 +42,18 @@ butt.addEventListener("click",
       } else {
          window.sessionStorage.setItem("rentapprevrow",row);
          var id = rentaps.length;
-         rentap[22] = id.toString();
          rentaps.push(rentap);
          row = kept.length;
          kept.push(id);
          window.sessionStorage.setItem("rentapskeptJSON",JSON.stringify(kept));
          window.sessionStorage.setItem("rentapsJSON",JSON.stringify(rentaps));
          window.sessionStorage.setItem('rentaprow',row);
-         window.sessionStorage.setItem('rentapmode','edit'); //having saved the application, further changes would be an edit
+         window.sessionStorage.setItem('mode','edit'); //having saved the application, further changes would be an edit
          self.postMessage(['new',id,rentap]); //save in simple storage 
       }
    },
 false);
 
-if(rentapmode != "discarded")
+if(mode != "discarded")
    document.getElementById("savebutton").appendChild(butt); //put the Save button on the page only if not viewing a discarded rentap
 

@@ -9,7 +9,7 @@
 //   rentaprow           (index of rentap currently displayed)
 //   rentapprevrow       (index of rentap that was displayed just before the current one, or -1 if not known)
 //   rentaptemprow       (index of rentap displayed before showing trash by pressing Trash button)
-//   rentapmode          (new, edit)
+//   rentapmode          (new | edit | discarded | edited)
 //   rentapCSV           (text entered into the CSV box)
 //   rentapSQL           (text entered into the SQL box)
 
@@ -51,7 +51,7 @@ function displayRentap(rentap) {
    document.getElementById('rownumber').value = '';
    document.getElementById('row').value=row;
    document.getElementById('idnumber').value = '';
-   document.getElementById('id').value=rentap[22];
+   document.getElementById('id').value=getID();
    document.getElementById('csv').value = csv;
    document.getElementById('SQL').value = SQL;
    document.getElementById('fullname').value = rentap[0];
@@ -76,7 +76,7 @@ function displayRentap(rentap) {
    document.getElementById('rentaladdress').value = rentap[19];
    document.getElementById('rentalcitystzip').value = rentap[20];
    document.getElementById('rtitle').value = rentap[21];
-   document.getElementById('rentapID').value = rentap[22];
+   document.getElementById('rentapID').value = getID();
    document.getElementById('rowprint').value=row;
    document.getElementById('headername').value="";
    if (mode === "new") {
@@ -161,6 +161,7 @@ function restoreState() {
          setRheader();
       } else {
          id = getID(); 
+         if (id = -1) id = 0;
          if(mode != 'edited') {
             if(typeof(rentaps[id]) != 'undefined') {
                displayRentap(rentaps[id]);
@@ -255,11 +256,16 @@ function prevButton() {
    if (really) {
       var rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
       var row = window.sessionStorage.getItem('rentaprow');
-      var ids = getIDlist();
       window.sessionStorage.setItem("rentapprevrow",row);
-      if (row>1) row--; else row=rentaps.length-1;
+      var ids = getIDlist();
+      if (row>1) row--; else row=ids.length-1;
+      var id = ids[row];
+      if (typeof(id) === 'undefined') {
+         id = 0;
+         row = 0;
+      }
       window.sessionStorage.setItem('rentaprow',row);
-      if(typeof(rentaps[ids[row]]) != 'undefined') displayRentap(rentaps[id]);
+      if(typeof(rentaps[id]) != 'undefined') displayRentap(rentaps[id]);
    }
 } 
 
@@ -268,11 +274,16 @@ function nextButton() {
    if (really) {
       var rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
       var row = window.sessionStorage.getItem('rentaprow');
-      var ids = getIDlist();
       window.sessionStorage.setItem("rentapprevrow",row);
+      var ids = getIDlist();
       if (row<ids.length-1) row++; else row=1;
+      var id = ids[row];
+      if (typeof(id) === 'undefined') {
+         id = 0;
+         row = 0;
+      }
       window.sessionStorage.setItem('rentaprow',row);
-      if(typeof(rentaps[ids[row]]) != 'undefined') displayRentap(rentaps[id]);
+      if(typeof(rentaps[id]) != 'undefined') displayRentap(rentaps[id]);
    } 
 }
 
@@ -437,11 +448,14 @@ function backButton() {
    
    butt.addEventListener("click", 
       function() {                                          //handle onclick event
-         if (typeof(rentaps[kept[row]]) === 'undefined' ) 
+         var id = kept[row];
+         if (typeof(id) === 'undefined') {
             row = kept.length-1;
+            id = kept[row];
+         }
          window.sessionStorage.setItem("rentaprow",row);
          window.sessionStorage.setItem("rentapmode","edit");
-         displayRentap(rentaps[kept[row]]);
+         displayRentap(rentaps[id]);
          location.reload(); // make sure addon buttons know what row we're on now
       },
    false);

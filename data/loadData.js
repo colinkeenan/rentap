@@ -12,8 +12,9 @@ self.on("message", function(simpleStorage) {
    window.sessionStorage.setItem("rentapsJSON", JSON.stringify(rentaps));
    window.sessionStorage.setItem("rentaptrashJSON", JSON.stringify(trash));
    window.sessionStorage.setItem("rentapmode","new"); // either just started rentap or clicked "new" link
-   var kept = [];
-   for (var id = 0, l = rentaps.length; id<l; id++)
+   var kept = [0];
+   var id = 0, l = rentaps.length;
+   while (++id<l)
       if (rentaps[id]!=null && trash.indexOf(id)===-1)
          kept.push(id);
    window.sessionStorage.setItem("rentapkeptJSON",JSON.stringify(kept))
