@@ -21,6 +21,7 @@ butt.addEventListener("click",
       var id = getID(); //row gets updated in getID()
       var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
       if (id != -1) {                                                          //don't expect id to ever be -1
+         var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
          rentaps[id] = null; //not splicing because want to preserve id's
          trash.splice(row,1);//but don't need to track it in trash
          if (trash.length > 1) {
@@ -35,6 +36,7 @@ butt.addEventListener("click",
          }
          window.sessionStorage.setItem("rentaprow",row);
          window.sessionStorage.setItem("rentaptrashJSON",JSON.stringify(trash));
+         window.sessionStorage.setItem("rentapsJSON",JSON.stringify(rentaps));
          self.postMessage(id);
       }
    },
