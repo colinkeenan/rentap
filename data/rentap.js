@@ -262,40 +262,36 @@ function editedVerifyReally() {
    return really;
 }
 
-function prevButton() {   
-   var really= editedVerifyReally();
-   if (really) {
-      var rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
-      var row = window.sessionStorage.getItem('rentaprow');
-      window.sessionStorage.setItem("rentapprevrow",row);
-      var ids = getIDlist();
-      if (row>1) row--; else row=ids.length-1;
-      var id = ids[row];
-      if (typeof(id) === 'undefined') {
-         id = 0;
-         row = 0;
-      }
-      window.sessionStorage.setItem('rentaprow',row);
-      if(typeof(rentaps[id]) != 'undefined') displayRentap(rentaps[id]);
+function moveOne(direction) {   
+   var ids = getIDlist();
+   if (ids.length > 1) { // if there's only one id, no place to go
+      var really = editedVerifyReally();
+      if (really) {
+         var rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
+         var row = window.sessionStorage.getItem('rentaprow');
+         window.sessionStorage.setItem("rentapprevrow",row);
+         if (direction === 'forward') {
+            if (row<ids.length-1) row++; else row=1;
+         } else {
+            if (row>1) row--; else row=ids.length-1;
+         } 
+         var id = ids[row];
+         if (typeof(id) === 'undefined') {
+            id = 0;
+            row = 0;
+         }
+         window.sessionStorage.setItem('rentaprow',row);
+         if(typeof(rentaps[id]) != 'undefined') displayRentap(rentaps[id]);
+      } 
    }
+}
+
+function prevButton() {   
+   moveOne('back');
 } 
 
 function nextButton() {   
-   var really= editedVerifyReally();
-   if (really) {
-      var rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
-      var row = window.sessionStorage.getItem('rentaprow');
-      window.sessionStorage.setItem("rentapprevrow",row);
-      var ids = getIDlist();
-      if (row<ids.length-1) row++; else row=1;
-      var id = ids[row];
-      if (typeof(id) === 'undefined') {
-         id = 0;
-         row = 0;
-      }
-      window.sessionStorage.setItem('rentaprow',row);
-      if(typeof(rentaps[id]) != 'undefined') displayRentap(rentaps[id]);
-   } 
+   moveOne('forward');
 }
 
 function jumpButton(){
