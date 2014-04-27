@@ -48,6 +48,10 @@ function displayRentap(rentap) {
    var SQL = window.sessionStorage.getItem("rentapSQL"); //text entered into the SQL box
    var mode = window.sessionStorage.getItem("rentapmode"); //new | edit | discarded
 
+   if (mode === 'newimport') {
+      row = '';
+      mode = 'new';
+   }
    document.getElementById('rownumber').value = '';
    document.getElementById('row').value=row;
    document.getElementById('idnumber').value = '';
@@ -79,10 +83,8 @@ function displayRentap(rentap) {
    document.getElementById('rentapID').value = getID();
    document.getElementById('rowprint').value=row;
    document.getElementById('headername').value="";
-   if (mode === "new") {
-      mode = "edit";
-      window.sessionStorage.setItem('rentapmode','edit');
-      location.reload(); //have to reload to tell addon buttons rentapmode changed
+   if (mode === 'newimport') {
+      window.sessionStorage.setItem("rentapmode","new");
    }
    var prevrow = window.sessionStorage.getItem('rentapprevrow');
    if (prevrow != -1 && (row == 0 || prevrow == 0) && (row != prevrow)) {
@@ -123,9 +125,10 @@ function getIDlist() {
 }
 
 function getID() {
+   var mode = window.sessionStorage.getItem("rentapmode");
+   if(mode === 'newimport') return '';
    var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
    var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
-   var mode = window.sessionStorage.getItem("rentapmode");
    var row = window.sessionStorage.getItem("rentaprow");
    if (row == null) {
       row = 0;
@@ -216,7 +219,12 @@ function setCSVInsertText() {
 
 function importCSV() {
    var rentap = CSV.csvToArray(document.getElementById('csv').value);
-   if(typeof(rentap) != 'undefined') displayRentap(rentap[0]);
+   if(typeof(rentap) != 'undefined') {
+      var mode = window.sessionStorage.getItem("rentapmode");
+      if (mode === 'new')
+         window.sessionStorage.setItem("rentapmode","newimport");
+      displayRentap(rentap[0]);
+   }
 }
 
 function setSqlInsertText() {
