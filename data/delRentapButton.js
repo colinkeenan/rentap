@@ -2,13 +2,13 @@ var butt = document.createElement("button");             //define button element
 var btext = document.createTextNode("Del");              //define the text
 butt.appendChild(btext);                                 //attach text to the button
 
-var mode = window.sessionStorage.getItem("mode");
+var mode = window.sessionStorage.getItem("rentapmode");
 var row = window.sessionStorage.getItem("rentaprow");
 
 function getID() {
    var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
    // row and mode above are only updated on window.reload, so have to update here too
-   mode = window.sessionStorage.getItem("mode");
+   mode = window.sessionStorage.getItem("rentapmode");
    row = window.sessionStorage.getItem("rentaprow")
    if(mode === 'discarded' && 0<row && row<trash.length) //since the del button isn't visible unless this is true, should always pass
       return Number(trash[row]);
@@ -31,7 +31,7 @@ butt.addEventListener("click",
             window.sessionStorage.setItem("rentapprevrow",-1);
             row = window.sessionStorage.getItem('rentaptemprow');
             if (row == null) row = 0;
-            window.sessionStorage.setItem("mode","edit");
+            window.sessionStorage.setItem("rentapmode","edit");
          }
          window.sessionStorage.setItem("rentaprow",row);
          window.sessionStorage.setItem("rentaptrashJSON",JSON.stringify(trash));

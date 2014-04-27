@@ -2,7 +2,7 @@ var butt = document.createElement("button");             //define button element
 var btext = document.createTextNode("Save");             //define the text
 butt.appendChild(btext);                                 //attach text to the button
 
-var mode = window.sessionStorage.getItem("mode");
+var mode = window.sessionStorage.getItem("rentapmode");
 
 butt.addEventListener("click", 
    function() {                                          //handle onclick event
@@ -30,7 +30,7 @@ butt.addEventListener("click",
          document.getElementById('rentalcitystzip').value,  //20
          document.getElementById('rtitle').value,    //21
       ]
-      mode = window.sessionStorage.getItem('mode');
+      mode = window.sessionStorage.getItem('rentapmode');
       var row = window.sessionStorage.getItem('rentaprow');
       rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
       var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
@@ -48,7 +48,7 @@ butt.addEventListener("click",
          window.sessionStorage.setItem("rentapkeptJSON",JSON.stringify(kept));
          window.sessionStorage.setItem("rentapsJSON",JSON.stringify(rentaps));
          window.sessionStorage.setItem('rentaprow',row);
-         window.sessionStorage.setItem('mode','edit'); //having saved the application, further changes would be an edit
+         window.sessionStorage.setItem('rentapmode','edit'); //having saved the application, further changes would be an edit
          self.postMessage(['new',id,rentap]); //save in simple storage 
       }
    },
