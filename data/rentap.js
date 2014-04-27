@@ -161,7 +161,7 @@ function restoreState() {
          setRheader();
       } else {
          id = getID(); 
-         if (id = -1) id = 0;
+         if (id == -1) id = 0;
          if(mode != 'edited') {
             if(typeof(rentaps[id]) != 'undefined') {
                displayRentap(rentaps[id]);
