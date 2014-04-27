@@ -116,7 +116,7 @@ function getIDlist() {
    var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
    var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
    var mode = window.sessionStorage.getItem("rentapmode");
-   if (mode === 'edit')
+   if (mode != 'discarded')
       return kept;
    else
       return trash;
@@ -126,8 +126,12 @@ function getID() {
    var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
    var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
    var mode = window.sessionStorage.getItem("rentapmode");
-   var row = window.sessionStorage.getItem("rentaprow")
-   if(mode === 'edit' && 0<=row && row<kept.length)
+   var row = window.sessionStorage.getItem("rentaprow");
+   if (row == null) {
+      row = 0;
+      window.sessionStorage.setItem("rentaprow",0);
+   }
+   if(mode != 'discarded' && 0<=row && row<kept.length)
       return Number(kept[row]);
    else if(mode === 'discarded' && 0<=row && row<trash.length) 
       return Number(trash[row]);
@@ -139,7 +143,7 @@ function getRowOfIDandSetMode(id) {
    var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
    var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
    var trashrow = trash.indexOf(id);
-   if(trashrow === -1) {
+   if(id === 0 || trashrow === -1) { // -1 means not in trash, but 0 is in both trash and kept
       window.sessionStorage.setItem('rentapmode','edit');
       return kept.indexOf(id);
    } else {
@@ -155,13 +159,20 @@ function restoreState() {
       var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
       var mode = window.sessionStorage.getItem("rentapmode"); 
       var row = window.sessionStorage.getItem("rentaprow")
-      if (row == null) row = 0;
+      if (row == null) {
+         row = 0;
+         window.sessionStorage.setItem("rentaprow",0);
+      }
       if(mode === 'new') {
          window.sessionStorage.setItem("rentaprow",row);
          setRheader();
       } else {
          id = getID(); 
-         if (id == -1) id = 0;
+         if (id === -1) {
+            id = 0;
+            row = 0;
+            window.sessionStorage.setItem("rentaprow",0);
+         }
          if(mode != 'edited') {
             if(typeof(rentaps[id]) != 'undefined') {
                displayRentap(rentaps[id]);
@@ -236,7 +247,7 @@ function editedVerifyReally() {
             edited = true;
       }
    } else {
-      for (var i=0; i<rentaps[row].length; i++) {
+      for (var i=0; i<rentaps[id].length; i++) {
          if (displayedRentap[i] != rentaps[id][i]) 
             edited = true;
       }

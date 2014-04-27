@@ -45,6 +45,7 @@ butt.addEventListener("click",
          rentaps.push(rentap);
          row = kept.length;
          kept.push(id);
+window.alert(rentap + "             " + kept);
          window.sessionStorage.setItem("rentapskeptJSON",JSON.stringify(kept));
          window.sessionStorage.setItem("rentapsJSON",JSON.stringify(rentaps));
          window.sessionStorage.setItem('rentaprow',row);
