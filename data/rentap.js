@@ -369,10 +369,11 @@ function searchButton() {
          var row = RENTAP[0]; //RENTAP[0] is the row, RENTAP[1] is the data to be displayed
          var prevrow = window.sessionStorage.getItem('rentaprow');
          var really= editedVerifyReally();
-         if (really) {
+         if (really && typeof(RENTAP[1]) != 'undefined') {
             window.sessionStorage.setItem('rentapprevrow',prevrow);
             window.sessionStorage.setItem('rentaprow',row);
-            if(typeof(RENTAP[1]) != 'undefined') displayRentap(RENTAP[1]);
+            window.sessionStorage.setItem('rentapmode','edit');
+            displayRentap(RENTAP[1]);
          }
          window.sessionStorage.setItem('rentapsFoundJSON',JSON.stringify(found)); //save so Choose Name can display found names
          populateChooseName();
