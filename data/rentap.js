@@ -277,7 +277,7 @@ function moveOne(direction) {
       if (really) {
          var rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
          var row = window.sessionStorage.getItem('rentaprow');
-         window.sessionStorage.setItem("rentapprevrow",row);
+         var prevrow = row;
          if (direction === 'forward') {
             if (row<ids.length-1) row++; else row=1;
          } else {
@@ -288,8 +288,12 @@ function moveOne(direction) {
             id = 0;
             row = 0;
          }
-         window.sessionStorage.setItem('rentaprow',row);
-         if(typeof(rentaps[id]) != 'undefined') displayRentap(rentaps[id]);
+         if(typeof(rentaps[id]) != 'undefined') {
+            window.sessionStorage.setItem('rentapprevrow',prevrow);
+            window.sessionStorage.setItem('rentaprow',row);
+            window.sessionStorage.setItem('rentapmode','edit');
+            displayRentap(rentaps[id]);
+         }
       } 
    }
 }
@@ -313,23 +317,41 @@ function jumpButton(){
       var CURRENT = id;
       var mode = window.sessionStorage.getItem("rentapmode");
       if (clickButton == 'row') {
-         var newrow = Number(document.getElementById("rownumber").value);
-         window.sessionStorage.setItem("rentaprow",newrow); 
-         if (getID() === -1) //getID() here will get the ID that matches newrow
-            window.alert("No application available at row: " + newrow.toString());
-         else
-            id = getID();
-         window.sessionStorage.setItem("rentaprow",row); //restoring rentaprow for now
-      } else if (clickButton == 'id') {
-         var newid = Number(document.getElementById("idnumber").value);
-         if (0<=newid && newid<rentaps.length) {
-            if (rentaps[newid] == null) 
-               window.alert("The application with ID=" + id.toString() + " has been deleted from Trash");
+         var input = document.getElementById("rownumber").value;
+         if(input == null) 
+            window.alert("Please enter a row to go to");
+         else 
+            var newrow = Number(input);
+         if(isNaN(newrow))
+            window.alert("Can't go to row '" + input + "' because it's not a number")
+         else {
+            window.sessionStorage.setItem("rentaprow",newrow); 
+            if (getID() === -1) //getID() here will get the ID that matches newrow
+               window.alert("No application available at row: " + newrow.toString());
             else
-               id = newid; 
-         } else {
-            window.alert("No application available with ID: " + id.toString());
+               id = getID();
+            window.sessionStorage.setItem("rentaprow",row); //restoring rentaprow for now
          }
+         document.getElementById("rownumber").value="";
+      } else if (clickButton == 'id') {
+         var input = document.getElementById("idnumber").value;
+         if(input == null)
+            window.alert("Please enter an id to go to");
+         else
+            var newid = Number(input);
+         if(isNaN(newid))
+            window.alert("Can't go to id '" + input + "' because it's not a number")
+         else {
+            if (0<=newid && newid<rentaps.length) {
+               if (rentaps[newid] == null) 
+                  window.alert("The application with ID=" + newid.toString() + " has been deleted from Trash");
+               else
+                  id = newid; 
+            } else {
+               window.alert("No application available with ID: " + newid.toString());
+            }
+         }
+         document.getElementById("idnumber").value="";
       }
       if (id!=CURRENT && 0<=id && id<rentaps.length) {
          if(typeof(rentaps[id]) != 'undefined') {
@@ -342,7 +364,8 @@ function jumpButton(){
             window.alert("The application found is undefined.");
          }
       } else {
-         window.alert("Error finding application."); 
+         if(id!=CURRENT)
+            window.alert("Error finding application."); 
       }
    }
 } 

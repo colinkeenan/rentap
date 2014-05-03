@@ -34,7 +34,7 @@ butt.addEventListener("click",
       var row = window.sessionStorage.getItem('rentaprow');
       rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
       var kept = JSON.parse(window.sessionStorage.getItem("rentapkeptJSON"));
-      if (mode==="edit") {
+      if (mode==="edit" || mode==="edited") {
          var id = Number(kept[row]);
          rentaps[id] = rentap;
          window.sessionStorage.setItem("rentapsJSON",JSON.stringify(rentaps));

@@ -21,7 +21,7 @@ label, .section_header {font: 14px serif; display: inline-block; min-width: 78px
 .inline {display: inline-block;}
 .inlineshort {display: inline-block; max-width:80px}
 .inlinebutton {display: inline-block; max-width:60px;}
-#jumpbutton, #idnumber, #rownumber {max-width:40px; position: relative; left: -4px}
+#jumpbutton, #idnumber, #rownumber, #prevbutton, #nextbutton {max-width:40px; position: relative; left: -4px}
 #prevbutton {position: relative; left: -4px}
 .inlinewidebutton {display: inline-block; max-width:120px}
 #findname {width: 250px}
