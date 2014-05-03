@@ -291,7 +291,8 @@ function moveOne(direction) {
          if(typeof(rentaps[id]) != 'undefined') {
             window.sessionStorage.setItem('rentapprevrow',prevrow);
             window.sessionStorage.setItem('rentaprow',row);
-            window.sessionStorage.setItem('rentapmode','edit');
+            if (window.sessionStorage.getItem('rentapmode')!='discarded')
+               window.sessionStorage.setItem('rentapmode','edit');
             displayRentap(rentaps[id]);
          }
       } 
@@ -343,7 +344,7 @@ function jumpButton(){
             window.alert("Can't go to id '" + input + "' because it's not a number")
          else {
             if (0<=newid && newid<rentaps.length) {
-               if (typeof(rentaps[newid][1]) === 'undefined') 
+               if (rentaps[newid] == null || typeof(rentaps[newid][1]) === 'undefined') 
                   window.alert("The application with ID=" + newid.toString() + " has been deleted from Trash");
                else
                   id = newid; 
