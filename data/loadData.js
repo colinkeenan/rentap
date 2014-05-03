@@ -15,7 +15,7 @@ self.on("message", function(simpleStorage) {
    var kept = [0];
    var id = 0, l = rentaps.length;
    while (++id<l)
-      if (rentaps[id]!=null && trash.indexOf(id)===-1)
+      if (typeof(rentaps[id][1])!='undefined' && trash.indexOf(id)===-1)
          kept.push(id);
    window.sessionStorage.setItem("rentapkeptJSON",JSON.stringify(kept))
    var prevrow = window.sessionStorage.getItem('rentapprevrow');

@@ -343,7 +343,7 @@ function jumpButton(){
             window.alert("Can't go to id '" + input + "' because it's not a number")
          else {
             if (0<=newid && newid<rentaps.length) {
-               if (rentaps[newid] == null) 
+               if (typeof(rentaps[newid][1]) === 'undefined') 
                   window.alert("The application with ID=" + newid.toString() + " has been deleted from Trash");
                else
                   id = newid; 
