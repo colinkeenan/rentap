@@ -26,6 +26,6 @@ butt.addEventListener("click",
    },
 false);
 
-if(mode === "edit" && row != 0) {
+if((mode === "edit" || mode === "edited") && row != 0) {
    document.getElementById("discardbutton").appendChild(butt); //only allow "discarding" if it's previously saved, not discarded, and not the last rentap
 }
