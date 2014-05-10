@@ -2,6 +2,7 @@
 //   rentapRHEADERJSON   (array of rentap headers)
 //   rentapRHEADERi      (index of currently displayed rentap header)
 //   rentapsJSON         (array of rentap applications as arrays)
+//   rentapHistoryJSON   (array of id's visited)
 //   rentapDisplayedJSON (currently displayed information as array)
 //   rentaptrashJSON     (array of indices to discarded rentap applications)
 //   rentapkeptJSON      (array of indices of kept rentap applications - any in rentaps that aren't in trash)
@@ -13,6 +14,10 @@
 //   rentapCSV           (text entered into the CSV box)
 //   rentapSQL           (text entered into the SQL box)
 
+function doNothing(e) { 
+   e.preventDefault(); 
+} // for submit button way off left of rentap.html page
+   
 function rentapDisplayed() {
     var rentap = [
         document.getElementById('fullname').value,  //0
@@ -42,6 +47,12 @@ function rentapDisplayed() {
    return rentap;
 }
 
+var myHistory = JSON.parse(window.sessionStorage.getItem("rentapHistoryJSON"));
+if(myHistory == null) {
+   myHistory = [0];
+   window.sessionStorage.setItem("rentapHistoryJSON",JSON.stringify(myHistory));
+}
+
 function displayRentap(rentap) {
    var row = window.sessionStorage.getItem("rentaprow");
    var csv = window.sessionStorage.getItem("rentapCSV"); //text entered into the CSV box
@@ -52,10 +63,16 @@ function displayRentap(rentap) {
       row = '';
       mode = 'new';
    }
+   var id=getID();
+   if(myHistory[myHistory.length-1] != id) {
+      history.pushState(id,"");
+      myHistory.push(id);
+      window.sessionStorage.setItem("rentapHistoryJSON",JSON.stringify(myHistory));
+   }
    document.getElementById('rownumber').value = '';
    document.getElementById('row').value=row;
    document.getElementById('idnumber').value = '';
-   document.getElementById('id').value=getID();
+   document.getElementById('id').value=id;
    document.getElementById('csv').value = csv;
    document.getElementById('SQL').value = SQL;
    document.getElementById('fullname').value = rentap[0];
@@ -80,7 +97,7 @@ function displayRentap(rentap) {
    document.getElementById('rentaladdress').value = rentap[19];
    document.getElementById('rentalcitystzip').value = rentap[20];
    document.getElementById('rtitle').value = rentap[21];
-   document.getElementById('rentapID').value = getID();
+   document.getElementById('rentapID').value = id;
    document.getElementById('rowprint').value=row;
    document.getElementById('headername').value="";
    if (mode === 'newimport') {
@@ -240,10 +257,10 @@ function clearCSV() {
    window.sessionStorage.setItem("rentapCSV","");
 }
 
-function editedVerifyReally() {
+function isEdited() {
    var mode = window.sessionStorage.getItem("rentapmode");
    if (mode === "discarded")
-      return true; //got here by using navigation in trash which can't be edited so no need for anything else
+      return false; //got here by using navigation in trash which can't be edited so no need for anything else
    var displayedRentap = rentapDisplayed();
    var rentaps = JSON.parse(window.sessionStorage.getItem('rentapsJSON'));
    var row = window.sessionStorage.getItem('rentaprow');
@@ -260,7 +277,13 @@ function editedVerifyReally() {
             edited = true;
       }
    }
+   return edited;
+}
+
+function editedVerifyReally() {
+   var edited = isEdited();
    var really = true;
+   var displayedRentap = rentapDisplayed();
    if (edited) {
       window.sessionStorage.setItem("rentapDisplayedJSON",JSON.stringify(displayedRentap));
       var really = window.confirm("Do you really want to leave this page without saving changes?");
@@ -269,6 +292,10 @@ function editedVerifyReally() {
    }
    return really;
 }
+
+window.addEventListener("beforeunload", function(event) { // triggered when user closes tab or enters a new url
+   if(isEdited()) event.preventDefault(); // default is to just close the tab, so preventing that asks if they really want to
+});
 
 function moveOne(direction) {   
    var ids = getIDlist();
@@ -327,10 +354,11 @@ function jumpButton(){
             window.alert("Can't go to row '" + input + "' because it's not a number")
          else {
             window.sessionStorage.setItem("rentaprow",newrow); 
-            if (getID() === -1) //getID() here will get the ID that matches newrow
+            if (getID() === -1) { //getID() here will get the ID that matches newrow
                window.alert("No application available at row: " + newrow.toString());
-            else
+            } else {
                id = getID();
+            }
             window.sessionStorage.setItem("rentaprow",row); //restoring rentaprow for now
          }
          document.getElementById("rownumber").value="";
@@ -370,6 +398,14 @@ function jumpButton(){
       }
    }
 } 
+
+window.onpopstate = function(event) { //user clicked browser back or forward button
+   if(getID() != event.state) {
+      document.getElementById("idnumber").value = event.state;
+      setClickButton('id');
+      jumpButton();
+   } else window.history.back();
+}
 
 function searchButton() {
    var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
