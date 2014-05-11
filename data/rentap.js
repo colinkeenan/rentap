@@ -17,10 +17,6 @@
 function doNothing(e) { 
    e.preventDefault(); 
 } // for submit button way off left of rentap.html page
-   
-window.addEventListener("beforeunload", function(event) { // triggered when user closes tab or enters a new url
-   if(isEdited()) event.preventDefault(); // default is to just close the tab, so preventing that asks if they really want to
-});
 
 window.onpopstate = function(event) { //user clicked browser back button - for some reason forward never appears
    if(getID() != event.state) {
@@ -34,7 +30,7 @@ window.onpopstate = function(event) { //user clicked browser back button - for s
    } else window.history.back();
 }
 
-function goForwardButton() {
+function goForwardButton() {      //putting my own forward button on the page since browser forward never appears
    var backHistory = JSON.parse(window.sessionStorage.getItem('rentapBackHistoryJSON'));
    if(backHistory!=null && typeof(backHistory[0])!='undefined') {
       var id = backHistory.pop();
