@@ -477,6 +477,7 @@ function populateChooseName() {
                var j = searchSel.options[i].value;
                window.sessionStorage.setItem('rentapprevrow',prevrow);
                window.sessionStorage.setItem('rentaprow',j);
+               window.sessionStorage.setItem('rentapmode','edit');
                displayRentap(rentaps[ids[j]]);
             }
          }
