@@ -1,23 +1,51 @@
 // window.sessionStorage variables:
-//   rentapRHEADERJSON   (array of rentap headers)
-//   rentapRHEADERi      (index of currently displayed rentap header)
-//   rentapsJSON         (array of rentap applications as arrays)
-//   rentapHistoryJSON   (array of id's visited)
-//   rentapDisplayedJSON (currently displayed information as array)
-//   rentaptrashJSON     (array of indices to discarded rentap applications)
-//   rentapkeptJSON      (array of indices of kept rentap applications - any in rentaps that aren't in trash)
-//   rentapsFoundJSON    (array of rentap applications that were found from searchbutton)
-//   rentaprow           (index of rentap currently displayed)
-//   rentapprevrow       (index of rentap that was displayed just before the current one, or -1 if not known)
-//   rentaptemprow       (index of rentap displayed before showing trash by pressing Trash button)
-//   rentapmode          (new | edit | discarded | edited)
-//   rentapCSV           (text entered into the CSV box)
-//   rentapSQL           (text entered into the SQL box)
+//   rentapRHEADERJSON     (array of rentap headers)
+//   rentapRHEADERi        (index of currently displayed rentap header)
+//   rentapsJSON           (array of rentap applications as arrays)
+//   rentapBackHistoryJSON (array of id's gone back through)
+//   rentapDisplayedJSON   (currently displayed information as array)
+//   rentaptrashJSON       (array of indices to discarded rentap applications)
+//   rentapkeptJSON        (array of indices of kept rentap applications - any in rentaps that aren't in trash)
+//   rentapsFoundJSON      (array of rentap applications that were found from searchbutton)
+//   rentaprow             (index of rentap currently displayed)
+//   rentapprevrow         (index of rentap that was displayed just before the current one, or -1 if not known)
+//   rentaptemprow         (index of rentap displayed before showing trash by pressing Trash button)
+//   rentapmode            (new | edit | discarded | edited)
+//   rentapCSV             (text entered into the CSV box)
+//   rentapSQL             (text entered into the SQL box)
 
 function doNothing(e) { 
    e.preventDefault(); 
 } // for submit button way off left of rentap.html page
    
+window.addEventListener("beforeunload", function(event) { // triggered when user closes tab or enters a new url
+   if(isEdited()) event.preventDefault(); // default is to just close the tab, so preventing that asks if they really want to
+});
+
+window.onpopstate = function(event) { //user clicked browser back button - for some reason forward never appears
+   if(getID() != event.state) {
+      var backHistory = JSON.parse(window.sessionStorage.getItem('rentapBackHistoryJSON'));
+      if(backHistory==null || typeof(backHistory[0])==='undefined') backHistory=[getID()];
+      backHistory.push(event.state);
+      window.sessionStorage.setItem('rentapBackHistoryJSON',JSON.stringify(backHistory));
+      document.getElementById("idnumber").value = event.state;
+      setClickButton('id');
+      jumpButton();
+   } else window.history.back();
+}
+
+function goForwardButton() {
+   var backHistory = JSON.parse(window.sessionStorage.getItem('rentapBackHistoryJSON'));
+   if(backHistory!=null && typeof(backHistory[0])!='undefined') {
+      var id = backHistory.pop();
+      while(id==getID()) id = backHistory.pop();
+      window.sessionStorage.setItem('rentapBackHistoryJSON',JSON.stringify(backHistory));
+      document.getElementById("idnumber").value = id;
+      setClickButton('id');
+      jumpButton();
+   }
+}
+
 function rentapDisplayed() {
     var rentap = [
         document.getElementById('fullname').value,  //0
@@ -47,12 +75,6 @@ function rentapDisplayed() {
    return rentap;
 }
 
-var myHistory = JSON.parse(window.sessionStorage.getItem("rentapHistoryJSON"));
-if(myHistory == null) {
-   myHistory = [0];
-   window.sessionStorage.setItem("rentapHistoryJSON",JSON.stringify(myHistory));
-}
-
 function displayRentap(rentap) {
    var row = window.sessionStorage.getItem("rentaprow");
    var csv = window.sessionStorage.getItem("rentapCSV"); //text entered into the CSV box
@@ -64,11 +86,7 @@ function displayRentap(rentap) {
       mode = 'new';
    }
    var id=getID();
-   if(myHistory[myHistory.length-1] != id) {
-      history.pushState(id,"");
-      myHistory.push(id);
-      window.sessionStorage.setItem("rentapHistoryJSON",JSON.stringify(myHistory));
-   }
+   history.pushState(id,"");
    document.getElementById('rownumber').value = '';
    document.getElementById('row').value=row;
    document.getElementById('idnumber').value = '';
@@ -293,10 +311,6 @@ function editedVerifyReally() {
    return really;
 }
 
-window.addEventListener("beforeunload", function(event) { // triggered when user closes tab or enters a new url
-   if(isEdited()) event.preventDefault(); // default is to just close the tab, so preventing that asks if they really want to
-});
-
 function moveOne(direction) {   
    var ids = getIDlist();
    if (ids.length > 1) { // if there's only one id, no place to go
@@ -398,14 +412,6 @@ function jumpButton(){
       }
    }
 } 
-
-window.onpopstate = function(event) { //user clicked browser back or forward button
-   if(getID() != event.state) {
-      document.getElementById("idnumber").value = event.state;
-      setClickButton('id');
-      jumpButton();
-   } else window.history.back();
-}
 
 function searchButton() {
    var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
