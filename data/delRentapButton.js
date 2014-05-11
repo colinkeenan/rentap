@@ -22,7 +22,8 @@ butt.addEventListener("click",
       var trash = JSON.parse(window.sessionStorage.getItem("rentaptrashJSON"));
       if (id != -1) {                                                          //don't expect id to ever be -1
          var rentaps = JSON.parse(window.sessionStorage.getItem("rentapsJSON"));
-         rentaps[id] = null; //not splicing because want to preserve id's
+         if(id===rentaps.length-1) rentaps.splice(id,1);
+         else rentaps[id] = null; //not splicing because want to preserve id's
          trash.splice(row,1);//but don't need to track it in trash
          if (trash.length > 1) {
             window.sessionStorage.setItem("rentapprevrow",row);
