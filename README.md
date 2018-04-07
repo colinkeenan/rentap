@@ -1,4 +1,5 @@
-#This legacy firefox extension only works with Gnu Icecat 52.x and Firefox ESR 52.x
+This legacy firefox extension only works with Gnu Icecat 52.x and Firefox ESR 52.x
+======
 ## About this extension
 * __Create/save/edit/print Rental Applications__ using simple-storage offline on your own computer.
 * __Install from addons.mozilla.org__ While Mozilla keeps the legacy addons site working, you can install this extension from https://addons.mozilla.org/en-US/firefox/addon/rental-application/?src=ss#detail-relnotes'%3ERental%20Application%20Release%20Notes&gid=1&pid=1. 
